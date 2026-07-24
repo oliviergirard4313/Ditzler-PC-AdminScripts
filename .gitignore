@@ -1,0 +1,10 @@
+# Sous-dossiers avec leur propre repo git
+Ditzler-Scripts-Superops/
+Ditzler-Azure-Automation/
+
+# Outils tiers (Sysinternals PsTools), pas du code a versionner
+Tools/
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
