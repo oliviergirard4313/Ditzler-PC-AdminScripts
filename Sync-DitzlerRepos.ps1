@@ -14,8 +14,18 @@
 # (diesen Ordner selbst) gar nicht kannten).
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 1.0
+# Version  : 1.1
 # Datum    : 2026-08-06
+#
+# Aenderungsverlauf:
+#   1.0 (2026-08-06): Erste Version (Pull/Push fuer alle drei Repos).
+#   1.1 (2026-08-06): Copy-DitzlerScriptsToTeams ergaenzt - kopiert
+#                     Ditzler-Scripts-Superops (ohne .git/.claude/old/
+#                     Logs) per robocopy /MIR in den Teams-Ordner
+#                     "Louis Ditzler AG\Informatik - General\Skripten\
+#                     VisualStudio Code", fuer die Verteilung an
+#                     Kollegen. Von Start-VSCode-With-GitSync.ps1 nach
+#                     jedem VS-Code-Schliessen aufgerufen.
 # ==========================================================
 
 $Global:DitzlerRepos = @(
@@ -103,6 +113,41 @@ function Sync-DitzlerRepoPush {
         return $true
     } finally {
         Pop-Location
+    }
+}
+
+function Copy-DitzlerScriptsToTeams {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$SourcePath
+    )
+
+    $TeamsPath = Join-Path $env:USERPROFILE "Louis Ditzler AG\Informatik - General\Skripten\VisualStudio Code\Superops"
+
+    if (-not (Test-Path -LiteralPath $SourcePath)) {
+        Write-DitzlerSyncLog "FEHLER Teams-Kopie: Quelle nicht gefunden: $SourcePath"
+        return
+    }
+
+    if (-not (Test-Path -LiteralPath $TeamsPath)) {
+        try {
+            New-Item -Path $TeamsPath -ItemType Directory -Force | Out-Null
+        } catch {
+            Write-DitzlerSyncLog "FEHLER Teams-Kopie: Zielordner konnte nicht erstellt werden: $($_.Exception.Message)"
+            return
+        }
+    }
+
+    # /MIR spiegelt den Ordner (loescht auch entfernte/umbenannte Dateien im Ziel).
+    # .git/.claude/old sowie Log-/Backup-Dateien werden bewusst nicht mitkopiert -
+    # der Teams-Ordner ist fuer die Verteilung an Kollegen gedacht, nicht als
+    # zweites Git-Repo oder Ablage fuer interne Tooling-Config.
+    & robocopy $SourcePath $TeamsPath /MIR /XD ".git" ".claude" "old" /XF "*.log" "*.bak.ps1" /NFL /NDL /NJH /NJS /NP | Out-Null
+
+    if ($LASTEXITCODE -ge 8) {
+        Write-DitzlerSyncLog "FEHLER Teams-Kopie: robocopy Exit-Code $LASTEXITCODE"
+    } else {
+        Write-DitzlerSyncLog "OK Teams-Kopie nach $TeamsPath (robocopy Exit-Code $LASTEXITCODE)"
     }
 }
 

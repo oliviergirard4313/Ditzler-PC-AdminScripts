@@ -17,7 +17,7 @@
 # verwenden.
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 2.0
+# Version  : 2.1
 # Datum    : 2026-08-06
 #
 # Aenderungsverlauf:
@@ -32,6 +32,11 @@
 #                     mitgenutzt) - dieses Skript enthaelt nur noch den
 #                     VS-Code-spezifischen Teil, um Drift zwischen
 #                     beiden PCs zu vermeiden.
+#   2.1 (2026-08-06): Kopie von Ditzler-Scripts-Superops nach Teams
+#                     (Copy-DitzlerScriptsToTeams in Sync-DitzlerRepos.ps1)
+#                     nach jedem VS-Code-Schliessen ergaenzt, fuer die
+#                     Verteilung an Kollegen ueber den Teams-Ordner
+#                     "Louis Ditzler AG\Informatik - General\Skripten".
 #
 # Voraussetzung: "code" muss im PATH sein (Standard bei VS-Code-
 # Installation mit "Add to PATH" aktiviert, hier bestaetigt).
@@ -57,3 +62,8 @@ Write-DitzlerSyncLog "VS Code Fenster geschlossen"
 
 # --- Push nach dem Schliessen, nur falls unpushte Commits vorhanden sind ---
 Invoke-DitzlerRepoSync -Mode Push
+
+# --- Kopie nach Teams (Louis Ditzler AG\Informatik - General\Skripten\VisualStudio Code) ---
+# Fuer die Verteilung an Kollegen - unabhaengig vom Git-Push, immer nach jedem
+# VS-Code-Schliessen aktualisiert, damit der Teams-Ordner den aktuellen Stand zeigt.
+Copy-DitzlerScriptsToTeams -SourcePath $RepoPath
