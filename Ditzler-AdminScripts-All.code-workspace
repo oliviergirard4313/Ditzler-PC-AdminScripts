@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "Ditzler-PC-AdminScripts (racine)",
+			"path": "."
+		},
+		{
+			"name": "Ditzler-Scripts-Superops",
+			"path": "Ditzler-Scripts-Superops"
+		},
+		{
+			"name": "Ditzler-Azure-Automation",
+			"path": "Ditzler-Azure-Automation"
+		}
+	],
+	"settings": {}
+}
