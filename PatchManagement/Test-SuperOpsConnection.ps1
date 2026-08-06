@@ -16,15 +16,25 @@
 .PARAMETER ApiEndpoint
     SuperOps IT-Edition Endpunkt (EU). Nicht MSP.
 
+.PARAMETER CustomerSubDomain
+    CustomerSubDomain fuer den SuperOps-API-Header.
+    Standard: Env-Variable SUPEROPS_CUSTOMER oder 'ditzler'.
+
 .EXAMPLE
     $env:SUPEROPS_API_KEY = "api-eyJ..."
+    $env:SUPEROPS_CUSTOMER = "ditzler"
     .\Test-SuperOpsConnection.ps1
 #>
 
 param(
-    [string]$ApiToken    = $env:SUPEROPS_API_KEY,
-    [string]$ApiEndpoint = 'https://euapi.superops.ai/it'
+    [string]$ApiToken         = $env:SUPEROPS_API_KEY,
+    [string]$ApiEndpoint      = 'https://euapi.superops.ai/it',
+    [string]$CustomerSubDomain = $env:SUPEROPS_CUSTOMER
 )
+
+if ([string]::IsNullOrEmpty($CustomerSubDomain)) {
+    $CustomerSubDomain = 'ditzler'
+}
 
 try { Clear-Host } catch { }
 Set-StrictMode -Version Latest
@@ -43,6 +53,7 @@ function Write-Log {
 
 Write-Host '=== SuperOps IT-API Verbindungstest ===' -ForegroundColor Cyan
 Write-Log "Endpunkt: $ApiEndpoint"
+Write-Log "CustomerSubDomain: $CustomerSubDomain"
 
 if ([string]::IsNullOrEmpty($ApiToken)) {
     Write-Log 'Kein Token gefunden. Parameter -ApiToken oder Env-Variable SUPEROPS_API_KEY setzen.' -Level 'ERR'
@@ -60,11 +71,12 @@ query {
 }
 '@
 
-$Body = @{ query = $Query } | ConvertTo-Json -Depth 5 -Compress
+$Body = @{ query = $Query } | ConvertTo-Json -Depth 5
 
 $Headers = @{
-    'Content-Type'  = 'application/json'
-    'Authorization' = "Bearer $ApiToken"
+        'Content-Type'      = 'application/json'
+        'Authorization'     = "Bearer $ApiToken"
+        'CustomerSubDomain' = $CustomerSubDomain
 }
 
 try {
@@ -77,7 +89,7 @@ try {
         -Body    $Body `
         -TimeoutSec 30
 
-    if ($Response.errors) {
+    if ($Response.PSObject.Properties['errors'] -and $Response.errors) {
         $Fehler = ($Response.errors | ForEach-Object { $_.message }) -join '; '
         Write-Log "GraphQL-Fehler: $Fehler" -Level 'ERR'
         exit 1

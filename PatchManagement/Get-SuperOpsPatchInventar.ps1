@@ -73,6 +73,7 @@ query getAssetList($input: ListInfoInput!) {
       platformFamily
       status
       patchStatus
+      lastCommunicatedTime
       customFields
     }
     listInfo {
@@ -84,7 +85,7 @@ query getAssetList($input: ListInfoInput!) {
 }
 '@
 
-$Alle     = [System.Collections.Generic.List[object]]::new()
+$Alle     = New-Object 'System.Collections.Generic.List[object]'
 $Seite    = 1
 $ProSeite = 100
 
@@ -92,7 +93,7 @@ do {
     $Vars = @{ input = @{ page = $Seite; pageSize = $ProSeite } }
     $Antwort = Invoke-SuperOpsGraphQL -Query $Query -Variables $Vars
 
-    if ($Antwort.errors) {
+    if ($Antwort.PSObject.Properties['errors'] -and $Antwort.errors) {
         $Fehler = ($Antwort.errors | ForEach-Object { $_.message }) -join '; '
         Write-Log "GraphQL-Fehler: $Fehler" -Level 'ERR'
         exit 1
@@ -116,7 +117,7 @@ Write-Log "$($Alle.Count) Assets total geladen." -Level 'OK'
 # Ausgabe-Objekte bauen
 # ---------------------------------------------------------
 
-$Ergebnis = [System.Collections.Generic.List[PSCustomObject]]::new()
+$Ergebnis = New-Object 'System.Collections.Generic.List[PSCustomObject]'
 
 foreach ($Asset in $Alle) {
 
@@ -135,13 +136,14 @@ foreach ($Asset in $Alle) {
     }
 
     $Ergebnis.Add([PSCustomObject]@{
-        AssetId         = $Asset.assetId
-        Name            = $Asset.name
-        HostName        = $Asset.hostName
-        Platform        = $Asset.platform
-        PlatformFamily  = $Asset.platformFamily
-        Status          = $Asset.status
-        PatchStatus     = $Asset.patchStatus
+        AssetId           = $Asset.assetId
+        Name              = $Asset.name
+        HostName          = $Asset.hostName
+        Platform          = $Asset.platform
+        PlatformFamily    = $Asset.platformFamily
+        Status            = $Asset.status
+        PatchStatus       = $Asset.patchStatus
+        LastCommunicated  = $LetzterKontakt
         Categorie_SWPatch = $PatchKategorie
     })
 }

@@ -1,0 +1,569 @@
+Sheet,Name,UpdateGroup,OS,IPAddress,UpdateDetails,SuperOpsName,AssetId,HostName,Platform,PlatformFamily,Status,PatchStatus,LastCommunicated,Category,Matched
+INC-46316,10.100.62.210,Sonstige,,10.100.62.210,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+INC-46316,10.100.62.211,Sonstige,,10.100.62.211,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+INC-46316,10.100.62.212,Sonstige,,10.100.62.212,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+INC-46316,10.100.62.213,Sonstige,,10.100.62.213,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+INC-46316,10.100.62.214,Sonstige,,10.100.62.214,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+INC-46316,CL-DMZ-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.66.21,OS Updates + Hilfs-Applikationen,CL-DMZ-01,5037667291742158848,CL-DMZ-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Fully Patched,2026-06-24 11:07,SV_SW-Std_Auto-Update-1,Yes
+INC-46316,CL-DMZ-02,AutoInstall,Windows 10,10.100.66.22,OS Updates + Hilfs-Applikationen,CL-DMZ-02,5230301397412839424,CL-DMZ-02,Microsoft Windows 10 Pro,Standalone Workstation,OFFLINE,Fully Patched,2026-02-19 07:03,SV_SW-Std_Auto-Update-1,Yes
+INC-46316,NET-FW-01,Network,FortiOS v6.4.7 build1911 (GA),10.100.15.1,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-01,Network,,10.100.15.201,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-02,Network,,10.100.15.202,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-03,Network,,10.100.15.203,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-04,Network,,10.100.15.204,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-05,Network,,10.100.15.205,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-06,Network,,10.100.15.206,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-10,Network,,10.100.15.210,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-20,Network,,10.100.15.220,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-21,Network,,10.100.15.221,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-22,Network,,10.100.15.222,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-23,Network,,10.100.15.223,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-24,Network,,10.100.15.224,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-SW-25,Network,,10.100.15.225,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-TEMP-01,Sonstige,,10.100.15.181,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-TEMP-02,Sonstige,,10.100.15.182,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-02,Sonstige,,10.100.15.174,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-03,Sonstige,,10.100.15.173,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-04,Sonstige,,10.100.15.176,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-05,Sonstige,,10.100.15.177,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-06,Sonstige,,10.100.15.178,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-07,Kein Update,,10.100.15.184,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-08,Kein Update,,10.100.15.185,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-11,Sonstige,,10.100.15.175,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-UPS-12,Sonstige,,10.100.15.179,Firmware Updates,,,,,,,,,,No
+INC-46316,NET-WL-AP-01,Network,,10.100.15.231,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-02,Network,,10.100.15.232,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-03,Network,,10.100.15.233,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-04,Network,,10.100.15.234,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-05,Network,,10.100.15.235,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-06,Network,,10.100.15.236,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-07,Network,,10.100.15.237,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-08,Network,,10.100.15.238,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-09,Network,,10.100.15.239,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-10,Network,,10.100.15.240,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-11,Network,,10.100.15.241,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-12,Network,,10.100.15.242,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-13,Network,,10.100.15.245,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-AP-14,Network,,10.100.15.246,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+INC-46316,NET-WL-CTL-01,Network,,10.100.15.230,Firmware Updates,,,,,,,,,,No
+INC-46316,SV-APP-03,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.101,OS Updates,,,,,,,,,,No
+INC-46316,SV-APP-04,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.105,OS Updates,,,,,,,,,,No
+INC-46316,SV-BI-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.131,OS Updates,SV-BI-APP-01,1635266155442036736,SV-BI-APP-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-BI-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.132,OS Updates,SV-BI-DB-01,5230272169006956544,SV-BI-DB-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-CEE-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.121,OS Updates,,,,,,,,,,No
+INC-46316,SV-CEE-BI-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.135,OS Updates,SV-CEE-BI-01,1635266204389564416,SV-CEE-BI-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-CEE-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.125,OS Updates,,,,,,,,,,No
+INC-46316,SV-CEE-SOM-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.126,OS Updates,,,,,,,,,,No
+INC-46316,SV-CEE-TST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.38,OS Updates,,,,,,,,,,No
+INC-46316,SV-CEE-TST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.39,OS Updates,,,,,,,,,,No
+INC-46316,SV-CODESOFT,Gruppe 1,Windows 7 Professional,10.100.15.110,OS Updates,,,,,,,,,,No
+INC-46316,SV-EOTEC-01,Gruppe 1,Microsoft Windows Server 2016 Standard,10.100.15.108,OS Updates,sv-eotec-01,1635274626426167296,sv-eotec-01,Microsoft Windows Server 2016 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-ESX-01,Kein Update,esxi 6.5 Update 3,135.135.32.122,,,,,,,,,,,No
+INC-46316,SV-ESX-02,Kein Update,esxi 6.5 Update 3,135.135.32.123,,,,,,,,,,,No
+INC-46316,SV-FILE-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.15,OS Updates,,,,,,,,,,No
+INC-46316,SV-GDSN-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.141,OS Updates,,,,,,,,,,No
+INC-46316,SV-GDSN-APP-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.142,OS Updates,,,,,,,,,,No
+INC-46316,SV-GDSN-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.145,OS Updates,,,,,,,,,,No
+INC-46316,SV-NLQA-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.128,OS Updates,,,,,,,,,,No
+INC-46316,SV-NLQA-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.129,OS Updates,,,,,,,,,,No
+INC-46316,SV-NU-CLUSTER-01,Nutanix,AHV,,OS Updates + Firmware Updates,,,,,,,,,,No
+INC-46316,SV-OR-CS-01,Sonstige,,10.100.62.34,Firmware Updates,,,,,,,,,,No
+INC-46316,SV-OR-CS-02,Sonstige,,10.100.62.33,Firmware Updates,,,,,,,,,,No
+INC-46316,SV-OR-CS-03,Sonstige,,10.100.62.32,Firmware Updates,,,,,,,,,,No
+INC-46316,SV-OR-DS-01,Sonstige,,10.100.62.31,Firmware Updates,,,,,,,,,,No
+INC-46316,SV-OS-ADC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.40,OS Updates,,,,,,,,,,No
+INC-46316,SV-OS-AV-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR TrendMicro,,,,,,,,,,No
+INC-46316,SV-OS-AV-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR OS Updates,,,,,,,,,,No
+INC-46316,SV-OS-BAK-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.18,OS Updates & Veeam,SV-OS-BAK-01,9014460145718771712,SV-OS-BAK-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-06-01 08:07,SV_SW-Std_Auto-Update-2,Yes
+INC-46316,SV-OS-BAK-02,Gruppe 3,Ubuntu 20 LTS,10.100.15.19,OS Updates,sv-os-bak-02,1498006163785166848,sv-os-bak-02,ubuntu,debian,OFFLINE,,2026-04-23 09:04,,Yes
+INC-46316,SV-OS-BAK-03,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.50,OS Updates & Veeam,SV-OS-BAK-03,123850073147936768,SV-OS-BAK-03.ditzlernet.local,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-04-21 12:04,SV_SW-Std_Auto-Update-1,Yes
+INC-46316,SV-OS-BITST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,,OS Updates,,,,,,,,,,No
+INC-46316,SV-OS-BITST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.15.100.134,OS Updates,,,,,,,,,,No
+INC-46316,SV-OS-DC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.11,OS Updates,SV-OS-DC-01,3793236466891575296,SV-OS-DC-01,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-1,Yes
+INC-46316,SV-OS-DC-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.12,OS Updates,SV-OS-DC-02,1516517069427871744,SV-OS-DC-02,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+INC-46316,SV-OS-IH-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,"OS Updates, PHP",SV-OS-IH-01,1635282824172363776,SV-OS-IH-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-2,Yes
+INC-46316,SV-OS-IR-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.111,OS Updates,,,,,,,,,,No
+INC-46316,SV-OS-MGT-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.15,OS Updates + Applikationen,SV-OS-MGT-01,1291279533970051072,SV-OS-MGT-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+INC-46316,SV-OS-NUPRX-01,Gruppe 3,N/A,10.100.2.16,OS Updates & veeam,,,,,,,,,,No
+INC-46316,SV-OS-OIP-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.106,OS Updates,SV-OS-OIP-01,5037660743968047104,SV-OS-OIP-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-OS-PRB-02,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.15.36,OS Updates,,,,,,,,,,No
+INC-46316,SV-OS-PWR-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.109,OS Updates,SV-OS-PWR-01,3751094959217057792,SV-OS-PWR-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-OS-SAGE-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.34,OS Updates,SV-OS-SAGE-01,3751120303047319552,SV-OS-SAGE-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Reboot Required,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-OS-SQLND-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.25,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-01,5037675042849505280,SV-OS-SQLND-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-OS-SQLND-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.22,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-02,1635303243365441536,SV-OS-SQLND-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-OS-TIME-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.16,OS Updates,SV-OS-TIME-01,3751094916779089920,SV-OS-TIME-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-OS-UPS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.180,OS Updates & Software,SV-OS-UPS-01,3655450426126028800,SV-OS-UPS-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Reboot Required,2026-07-10 08:35,SV_SW-Std_Auto-Update-1,Yes
+INC-46316,SV-OS-WDS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.31,OS Updates,,,,,,,,,,No
+INC-46316,SV-OS-WSUS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.32,OS Updates,SV-OS-WSUS-01,7631324831867908096,SV-OS-WSUS-01,Microsoft Windows Server 2025 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,,Yes
+INC-46316,SV-PB-HV-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.100.51,OS Updates & Treiber & USV,SV-PB-HV-01,572883608847360000,SV-PB-HV-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-08-04 15:33,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-PB-PRB-01,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.100.21,OS Updates,,,,,,,,,,No
+INC-46316,SV-PRINT-06,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.143,OS Updates,,,,,,,,,,No
+INC-46316,SV-PSG-CIM-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.21,OS Updates,SV-PSG-CIM-01,1306826073592401920,SV-PSG-CIM-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-PSG-CIM-02,Gruppe 4,Microsoft Windows Server 2019 Standard,10.100.101.22,OS Updates,SV-PSG-CIM-02,1306822750629892096,SV-PSG-CIM-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-PSG-DC-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.11,OS Updates,SV-PSG-DC-01,1951775646885867520,SV-PSG-DC-01,Microsoft Windows Server 2019 Standard,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-1,Yes
+INC-46316,SV-PSG-HIST-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.23,OS Updates,SV-PSG-HIST-01,1951772813461549056,SV-PSG-HIST-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+INC-46316,SV-STO-NA-01,MUSS EINGEPLANT WERDEN,DSM 7.0.1-42218,10.100.15.91,DSM Update,,,,,,,,,,No
+INC-46316,SV-STO-NA-02,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.92,DSM Update,,,,,,,,,,No
+INC-46316,SV-STO-NA-03,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.93,DSM Update,,,,,,,,,,No
+INC-46316,SV-STO-NA-04,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.94,DSM Update,,,,,,,,,,No
+INC-46316,SV-STO-SYNO-01,Gruppe 3,DSM 7.2.1,10.100.15.95,DSM Update,,,,,,,,,,No
+INC-46316,SV-STO-SYNO-02,Gruppe 3,DSM 7.2.1,10.100.15.96,DSM Update,,,,,,,,,,No
+INC-46316,SV-VCENTER-02,Kein Update,,135.135.32.129,,,,,,,,,,,No
+INC-46316,SW-EDV-01,Kein Update,,135.135.32.117,Keine - Legacy Umgebung,,,,,,,,,,No
+INC-46316,SW-FCS-01,Kein Update,,135.135.32.118,Keine - Legacy Umgebung,,,,,,,,,,No
+INC-46316,SW-FCS-02,Kein Update,,135.135.32.119,Keine - Legacy Umgebung,,,,,,,,,,No
+INC-46316,USV-ESX-101,Sonstige,,10.100.15.171,Firmware USV & NIC,,,,,,,,,,No
+Wartungsplan 2024 - Q4,10.100.62.210,Sonstige,,10.100.62.210,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q4,10.100.62.211,Sonstige,,10.100.62.211,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q4,10.100.62.212,Sonstige,,10.100.62.212,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q4,10.100.62.213,Sonstige,,10.100.62.213,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q4,10.100.62.214,Sonstige,,10.100.62.214,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q4,CL-DMZ-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.66.21,OS Updates + Hilfs-Applikationen,CL-DMZ-01,5037667291742158848,CL-DMZ-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Fully Patched,2026-06-24 11:07,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q4,CL-DMZ-02,AutoInstall,Windows 10,10.100.66.22,OS Updates + Hilfs-Applikationen,CL-DMZ-02,5230301397412839424,CL-DMZ-02,Microsoft Windows 10 Pro,Standalone Workstation,OFFLINE,Fully Patched,2026-02-19 07:03,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q4,NET-FW-01,Network,FortiOS v6.4.7 build1911 (GA),10.100.15.1,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-01,Network,,10.100.15.201,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-02,Network,,10.100.15.202,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-03,Network,,10.100.15.203,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-04,Network,,10.100.15.204,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-05,Network,,10.100.15.205,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-06,Network,,10.100.15.206,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-10,Network,,10.100.15.210,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-20,Network,,10.100.15.220,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-21,Network,,10.100.15.221,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-22,Network,,10.100.15.222,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-23,Network,,10.100.15.223,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-24,Network,,10.100.15.224,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-SW-25,Network,,10.100.15.225,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-TEMP-01,Sonstige,,10.100.15.181,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-TEMP-02,Sonstige,,10.100.15.182,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-02,Sonstige,,10.100.15.174,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-03,Sonstige,,10.100.15.173,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-04,Sonstige,,10.100.15.176,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-05,Sonstige,,10.100.15.177,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-06,Sonstige,,10.100.15.178,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-07,Kein Update,,10.100.15.184,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-08,Kein Update,,10.100.15.185,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-11,Sonstige,,10.100.15.175,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-UPS-12,Sonstige,,10.100.15.179,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-01,Network,,10.100.15.231,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-02,Network,,10.100.15.232,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-03,Network,,10.100.15.233,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-04,Network,,10.100.15.234,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-05,Network,,10.100.15.235,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-06,Network,,10.100.15.236,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-07,Network,,10.100.15.237,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-08,Network,,10.100.15.238,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-09,Network,,10.100.15.239,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-10,Network,,10.100.15.240,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-11,Network,,10.100.15.241,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-12,Network,,10.100.15.242,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-13,Network,,10.100.15.245,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-AP-14,Network,,10.100.15.246,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q4,NET-WL-CTL-01,Network,,10.100.15.230,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-APP-03,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.101,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-APP-04,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.105,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-BI-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.131,OS Updates,SV-BI-APP-01,1635266155442036736,SV-BI-APP-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-BI-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.132,OS Updates,SV-BI-DB-01,5230272169006956544,SV-BI-DB-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-CEE-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.121,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-CEE-BI-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.135,OS Updates,SV-CEE-BI-01,1635266204389564416,SV-CEE-BI-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-CEE-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.125,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-CEE-SOM-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.126,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-CEE-TST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.38,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-CEE-TST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.39,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-CODESOFT,Gruppe 1,Windows 7 Professional,10.100.15.110,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-EOTEC-01,Gruppe 1,Microsoft Windows Server 2016 Standard,10.100.15.108,OS Updates,sv-eotec-01,1635274626426167296,sv-eotec-01,Microsoft Windows Server 2016 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-FILE-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.15,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-GDSN-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.141,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-GDSN-APP-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.142,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-GDSN-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.145,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-NLQA-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.128,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-NLQA-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.129,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-NU-CLUSTER-01,Nutanix,AHV,,OS Updates + Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OR-CS-01,Sonstige,,10.100.62.34,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OR-CS-02,Sonstige,,10.100.62.33,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OR-CS-03,Sonstige,,10.100.62.32,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OR-DS-01,Sonstige,,10.100.62.31,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-ADC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.40,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-AV-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-AV-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-BAK-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.18,OS Updates & Veeam,SV-OS-BAK-01,9014460145718771712,SV-OS-BAK-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-06-01 08:07,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q4,SV-OS-BAK-02,Gruppe 3,Ubuntu 20 LTS,10.100.15.19,OS Updates,sv-os-bak-02,1498006163785166848,sv-os-bak-02,ubuntu,debian,OFFLINE,,2026-04-23 09:04,,Yes
+Wartungsplan 2024 - Q4,SV-OS-BAK-03,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.50,OS Updates & Veeam,SV-OS-BAK-03,123850073147936768,SV-OS-BAK-03.ditzlernet.local,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-04-21 12:04,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q4,SV-OS-BITST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-BITST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.15.100.134,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-DC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.11,OS Updates,SV-OS-DC-01,3793236466891575296,SV-OS-DC-01,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q4,SV-OS-DC-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.12,OS Updates,SV-OS-DC-02,1516517069427871744,SV-OS-DC-02,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q4,SV-OS-IH-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,"OS Updates, PHP",SV-OS-IH-01,1635282824172363776,SV-OS-IH-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q4,SV-OS-IR-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.111,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-MGT-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.15,OS Updates + Applikationen,SV-OS-MGT-01,1291279533970051072,SV-OS-MGT-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q4,SV-OS-NUPRX-01,Gruppe 3,N/A,10.100.2.16,OS Updates & veeam,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-OIP-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.106,OS Updates,SV-OS-OIP-01,5037660743968047104,SV-OS-OIP-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-OS-PRB-02,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.15.36,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-PWR-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.109,OS Updates,SV-OS-PWR-01,3751094959217057792,SV-OS-PWR-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-OS-SAGE-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.34,OS Updates,SV-OS-SAGE-01,3751120303047319552,SV-OS-SAGE-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Reboot Required,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-OS-SQLND-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.25,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-01,5037675042849505280,SV-OS-SQLND-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-OS-SQLND-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.22,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-02,1635303243365441536,SV-OS-SQLND-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-OS-TIME-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.16,OS Updates,SV-OS-TIME-01,3751094916779089920,SV-OS-TIME-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-OS-UPS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.180,OS Updates & Software,SV-OS-UPS-01,3655450426126028800,SV-OS-UPS-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Reboot Required,2026-07-10 08:35,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q4,SV-OS-WDS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.31,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-OS-WSUS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.32,OS Updates,SV-OS-WSUS-01,7631324831867908096,SV-OS-WSUS-01,Microsoft Windows Server 2025 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,,Yes
+Wartungsplan 2024 - Q4,SV-PB-HV-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.100.51,OS Updates & Treiber & USV,SV-PB-HV-01,572883608847360000,SV-PB-HV-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-08-04 15:33,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-PB-PRB-01,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.100.21,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-PRINT-06,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.143,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-PSG-CIM-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.21,OS Updates,SV-PSG-CIM-01,1306826073592401920,SV-PSG-CIM-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-PSG-CIM-02,Gruppe 4,Microsoft Windows Server 2019 Standard,10.100.101.22,OS Updates,SV-PSG-CIM-02,1306822750629892096,SV-PSG-CIM-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-PSG-DC-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.11,OS Updates,SV-PSG-DC-01,1951775646885867520,SV-PSG-DC-01,Microsoft Windows Server 2019 Standard,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q4,SV-PSG-HIST-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.23,OS Updates,SV-PSG-HIST-01,1951772813461549056,SV-PSG-HIST-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q4,SV-STO-NA-01,MUSS EINGEPLANT WERDEN,DSM 7.0.1-42218,10.100.15.91,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-STO-NA-02,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.92,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-STO-NA-03,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.93,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-STO-NA-04,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.94,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-STO-SYNO-01,Gruppe 3,DSM 7.2.1,10.100.15.95,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-STO-SYNO-02,Gruppe 3,DSM 7.2.1,10.100.15.96,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SV-VCENTER-02,Kein Update,,135.135.32.129,,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SW-EDV-01,Kein Update,,135.135.32.117,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SW-FCS-01,Kein Update,,135.135.32.118,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q4,SW-FCS-02,Kein Update,,135.135.32.119,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q4,USV-ESX-101,Sonstige,,10.100.15.171,Firmware USV & NIC,,,,,,,,,,No
+Wartungsplan 2024 - Q3,10.100.62.210,Sonstige,,10.100.62.210,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q3,10.100.62.211,Sonstige,,10.100.62.211,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q3,10.100.62.212,Sonstige,,10.100.62.212,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q3,10.100.62.213,Sonstige,,10.100.62.213,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q3,10.100.62.214,Sonstige,,10.100.62.214,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q3,CL-DMZ-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.66.21,OS Updates + Hilfs-Applikationen,CL-DMZ-01,5037667291742158848,CL-DMZ-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Fully Patched,2026-06-24 11:07,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q3,CL-DMZ-02,AutoInstall,Windows 10,10.100.66.22,OS Updates + Hilfs-Applikationen,CL-DMZ-02,5230301397412839424,CL-DMZ-02,Microsoft Windows 10 Pro,Standalone Workstation,OFFLINE,Fully Patched,2026-02-19 07:03,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q3,NET-FW-01,Network,FortiOS v6.4.7 build1911 (GA),10.100.15.1,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-01,Network,,10.100.15.201,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-02,Network,,10.100.15.202,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-03,Network,,10.100.15.203,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-04,Network,,10.100.15.204,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-05,Network,,10.100.15.205,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-06,Network,,10.100.15.206,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-10,Network,,10.100.15.210,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-20,Network,,10.100.15.220,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-21,Network,,10.100.15.221,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-22,Network,,10.100.15.222,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-23,Network,,10.100.15.223,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-24,Network,,10.100.15.224,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-SW-25,Network,,10.100.15.225,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-TEMP-01,Sonstige,,10.100.15.181,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-TEMP-02,Sonstige,,10.100.15.182,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-02,Sonstige,,10.100.15.174,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-03,Sonstige,,10.100.15.173,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-04,Sonstige,,10.100.15.176,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-05,Sonstige,,10.100.15.177,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-06,Sonstige,,10.100.15.178,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-07,Kein Update,,10.100.15.184,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-08,Kein Update,,10.100.15.185,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-11,Sonstige,,10.100.15.175,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-UPS-12,Sonstige,,10.100.15.179,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-01,Network,,10.100.15.231,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-02,Network,,10.100.15.232,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-03,Network,,10.100.15.233,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-04,Network,,10.100.15.234,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-05,Network,,10.100.15.235,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-06,Network,,10.100.15.236,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-07,Network,,10.100.15.237,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-08,Network,,10.100.15.238,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-09,Network,,10.100.15.239,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-10,Network,,10.100.15.240,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-11,Network,,10.100.15.241,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-12,Network,,10.100.15.242,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-13,Network,,10.100.15.245,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-AP-14,Network,,10.100.15.246,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q3,NET-WL-CTL-01,Network,,10.100.15.230,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-APP-03,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.101,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-APP-04,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.105,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-BI-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.131,OS Updates,SV-BI-APP-01,1635266155442036736,SV-BI-APP-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-BI-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.132,OS Updates,SV-BI-DB-01,5230272169006956544,SV-BI-DB-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-CEE-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.121,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-CEE-BI-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.135,OS Updates,SV-CEE-BI-01,1635266204389564416,SV-CEE-BI-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-CEE-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.125,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-CEE-SOM-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.126,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-CEE-TST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.38,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-CEE-TST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.39,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-CODESOFT,Gruppe 1,Windows 7 Professional,10.100.15.110,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-EOTEC-01,Gruppe 1,Microsoft Windows Server 2016 Standard,10.100.15.108,OS Updates,sv-eotec-01,1635274626426167296,sv-eotec-01,Microsoft Windows Server 2016 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-ESX-01,Kein Update,esxi 6.5 Update 3,135.135.32.122,,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-ESX-02,Kein Update,esxi 6.5 Update 3,135.135.32.123,,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-FILE-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.15,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-GDSN-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.141,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-GDSN-APP-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.142,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-GDSN-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.145,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-NLQA-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.128,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-NLQA-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.129,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-NU-CLUSTER-01,Nutanix,AHV,,OS Updates + Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OR-CS-01,Sonstige,,10.100.62.34,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OR-CS-02,Sonstige,,10.100.62.33,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OR-CS-03,Sonstige,,10.100.62.32,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OR-DS-01,Sonstige,,10.100.62.31,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-ADC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.40,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-AV-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-AV-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-BAK-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.18,OS Updates & Veeam,SV-OS-BAK-01,9014460145718771712,SV-OS-BAK-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-06-01 08:07,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q3,SV-OS-BAK-02,Gruppe 3,Ubuntu 20 LTS,10.100.15.19,OS Updates,sv-os-bak-02,1498006163785166848,sv-os-bak-02,ubuntu,debian,OFFLINE,,2026-04-23 09:04,,Yes
+Wartungsplan 2024 - Q3,SV-OS-BAK-03,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.50,OS Updates & Veeam,SV-OS-BAK-03,123850073147936768,SV-OS-BAK-03.ditzlernet.local,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-04-21 12:04,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q3,SV-OS-BITST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-BITST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.15.100.134,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-DC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.11,OS Updates,SV-OS-DC-01,3793236466891575296,SV-OS-DC-01,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q3,SV-OS-DC-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.12,OS Updates,SV-OS-DC-02,1516517069427871744,SV-OS-DC-02,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q3,SV-OS-IH-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,"OS Updates, PHP",SV-OS-IH-01,1635282824172363776,SV-OS-IH-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q3,SV-OS-IR-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.111,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-MGT-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.15,OS Updates + Applikationen,SV-OS-MGT-01,1291279533970051072,SV-OS-MGT-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q3,SV-OS-NUPRX-01,Gruppe 3,N/A,10.100.2.16,OS Updates & veeam,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-OIP-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.106,OS Updates,SV-OS-OIP-01,5037660743968047104,SV-OS-OIP-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-OS-PRB-02,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.15.36,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-PWR-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.109,OS Updates,SV-OS-PWR-01,3751094959217057792,SV-OS-PWR-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-OS-SAGE-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.34,OS Updates,SV-OS-SAGE-01,3751120303047319552,SV-OS-SAGE-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Reboot Required,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-OS-SQLND-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.25,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-01,5037675042849505280,SV-OS-SQLND-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-OS-SQLND-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.22,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-02,1635303243365441536,SV-OS-SQLND-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-OS-TIME-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,OS Updates,SV-OS-TIME-01,3751094916779089920,SV-OS-TIME-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-OS-UPS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.180,OS Updates & Software,SV-OS-UPS-01,3655450426126028800,SV-OS-UPS-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Reboot Required,2026-07-10 08:35,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q3,SV-OS-WDS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.31,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-OS-WSUS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.32,OS Updates,SV-OS-WSUS-01,7631324831867908096,SV-OS-WSUS-01,Microsoft Windows Server 2025 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,,Yes
+Wartungsplan 2024 - Q3,SV-PB-HV-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.100.51,OS Updates & Treiber & USV,SV-PB-HV-01,572883608847360000,SV-PB-HV-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-08-04 15:33,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-PB-PRB-01,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.100.21,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-PRINT-06,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.143,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-PSG-CIM-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.21,OS Updates,SV-PSG-CIM-01,1306826073592401920,SV-PSG-CIM-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-PSG-CIM-02,Gruppe 4,Microsoft Windows Server 2019 Standard,10.100.101.22,OS Updates,SV-PSG-CIM-02,1306822750629892096,SV-PSG-CIM-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-PSG-DC-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.11,OS Updates,SV-PSG-DC-01,1951775646885867520,SV-PSG-DC-01,Microsoft Windows Server 2019 Standard,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q3,SV-PSG-HIST-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.23,OS Updates,SV-PSG-HIST-01,1951772813461549056,SV-PSG-HIST-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q3,SV-STO-NA-01,Kein Update,DSM 7.0.1-42218,10.100.15.91,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-STO-NA-02,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.92,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-STO-NA-03,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.93,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-STO-NA-04,Kein Update,DSM 7.0.1-42218 Update 2,10.100.15.94,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-STO-SYNO-01,Gruppe 4,DSM 7.2.1,10.100.15.95,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-STO-SYNO-02,Gruppe 4,DSM 7.2.1,10.100.15.96,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SV-VCENTER-02,Kein Update,,135.135.32.129,,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SW-EDV-01,Kein Update,,135.135.32.117,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SW-FCS-01,Kein Update,,135.135.32.118,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q3,SW-FCS-02,Kein Update,,135.135.32.119,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q3,USV-ESX-101,Sonstige,,10.100.15.171,Firmware USV & NIC,,,,,,,,,,No
+Wartungsplan 2024 - Q2,10.100.62.210,Sonstige,,10.100.62.210,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q2,10.100.62.211,Sonstige,,10.100.62.211,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q2,10.100.62.212,Sonstige,,10.100.62.212,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q2,10.100.62.213,Sonstige,,10.100.62.213,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q2,10.100.62.214,Sonstige,,10.100.62.214,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q2,CL-DMZ-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.66.21,OS Updates + Hilfs-Applikationen,CL-DMZ-01,5037667291742158848,CL-DMZ-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Fully Patched,2026-06-24 11:07,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q2,CL-DMZ-02,AutoInstall,Windows 10,10.100.66.22,OS Updates + Hilfs-Applikationen,CL-DMZ-02,5230301397412839424,CL-DMZ-02,Microsoft Windows 10 Pro,Standalone Workstation,OFFLINE,Fully Patched,2026-02-19 07:03,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q2,NET-FW-01,Network,FortiOS v6.4.7 build1911 (GA),10.100.15.1,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-01,Network,,10.100.15.201,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-02,Network,,10.100.15.202,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-03,Network,,10.100.15.203,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-04,Network,,10.100.15.204,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-05,Network,,10.100.15.205,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-06,Network,,10.100.15.206,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-10,Network,,10.100.15.210,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-20,Network,,10.100.15.220,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-21,Network,,10.100.15.221,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-22,Network,,10.100.15.222,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-23,Network,,10.100.15.223,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-24,Network,,10.100.15.224,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-SW-25,Network,,10.100.15.225,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-TEMP-01,Sonstige,,10.100.15.181,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-TEMP-02,Sonstige,,10.100.15.182,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-UPS-02,Sonstige,,10.100.15.174,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-UPS-03,Sonstige,,10.100.15.173,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-UPS-04,Sonstige,,10.100.15.176,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-UPS-05,Sonstige,,10.100.15.177,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-UPS-06,Sonstige,,10.100.15.178,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-UPS-11,Sonstige,,10.100.15.175,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-UPS-12,Sonstige,,10.100.15.179,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-01,Network,,10.100.15.231,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-02,Network,,10.100.15.232,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-03,Network,,10.100.15.233,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-04,Network,,10.100.15.234,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-05,Network,,10.100.15.235,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-06,Network,,10.100.15.236,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-07,Network,,10.100.15.237,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-08,Network,,10.100.15.238,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-09,Network,,10.100.15.239,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-10,Network,,10.100.15.240,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-11,Network,,10.100.15.241,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-12,Network,,10.100.15.242,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-13,Network,,10.100.15.245,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-AP-14,Network,,10.100.15.246,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q2,NET-WL-CTL-01,Network,,10.100.15.230,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-AD-02,Retired,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.139,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-APP-03,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.101,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-APP-04,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.105,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-BACKUP-01,Retired,Microsoft Windows Server 2012 R2 Standard,135.135.32.121,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-BI-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.131,OS Updates,SV-BI-APP-01,1635266155442036736,SV-BI-APP-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-BI-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.132,OS Updates,SV-BI-DB-01,5230272169006956544,SV-BI-DB-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-CEE-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.121,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-CEE-BI-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.135,OS Updates,SV-CEE-BI-01,1635266204389564416,SV-CEE-BI-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-CEE-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.125,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-CEE-SOM-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.126,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-CEE-TST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.38,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-CEE-TST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.39,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-CODESOFT,Gruppe 1,Windows 7 Professional,10.100.15.110,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-EOTEC-01,Gruppe 1,Microsoft Windows Server 2016 Standard,10.100.15.108,OS Updates,sv-eotec-01,1635274626426167296,sv-eotec-01,Microsoft Windows Server 2016 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-ESX-01,Kein Update,esxi 6.5 Update 3,135.135.32.122,,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-ESX-02,Kein Update,esxi 6.5 Update 3,135.135.32.123,,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-BAK-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.18,OS Updates,SV-OS-BAK-01,9014460145718771712,SV-OS-BAK-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-06-01 08:07,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q2,SV-OS-BAK-02,Gruppe 3,Ubuntu 20 LTS,10.100.15.19,OS Updates,sv-os-bak-02,1498006163785166848,sv-os-bak-02,ubuntu,debian,OFFLINE,,2026-04-23 09:04,,Yes
+Wartungsplan 2024 - Q2,SV-OS-BAK-03,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.50,OS Updates,SV-OS-BAK-03,123850073147936768,SV-OS-BAK-03.ditzlernet.local,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-04-21 12:04,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q2,SV-OS-IH-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,"OS Updates, PHP",SV-OS-IH-01,1635282824172363776,SV-OS-IH-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q2,SV-OS-IR-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.111,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-MAILRELAY-01,Retired,Ubuntu 20 LTS,10.100.15.37,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-NU-CLUSTER-01,Nutanix,AHV,,OS Updates + Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-NUPRX-01,Gruppe 3,N/A,10.100.2.16,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OR-CS-01,Sonstige,,10.100.62.34,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OR-CS-02,Sonstige,,10.100.62.33,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OR-CS-03,Sonstige,,10.100.62.32,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-ADC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.40,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-AV-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-AV-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-AVST-01,Retired,Microsoft Windows Server 2019 Standard,10.100.15.66,OS Updates + TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-AVST-02,Retired,Microsoft Windows Server 2019 Standard,10.100.15.67,OS Updates + TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-FILE-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.15,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-GDSN-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.141,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-GDSN-APP-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.142,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-BITST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-BITST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.15.100.134,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-DC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.11,OS Updates,SV-OS-DC-01,3793236466891575296,SV-OS-DC-01,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q2,SV-OS-DC-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.12,OS Updates,SV-OS-DC-02,1516517069427871744,SV-OS-DC-02,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q2,SV-GDSN-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.145,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-NLQA-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.128,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-NLQA-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.129,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-MGT-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.15,OS Updates + Applikationen,SV-OS-MGT-01,1291279533970051072,SV-OS-MGT-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q2,SV-OR-DS-01,Sonstige,,10.100.62.31,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-SAGE-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.34,OS Updates,SV-OS-SAGE-01,3751120303047319552,SV-OS-SAGE-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Reboot Required,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-OS-PWR-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.109,OS Updates,SV-OS-PWR-01,3751094959217057792,SV-OS-PWR-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-OS-OIP-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.106,OS Updates,SV-OS-OIP-01,5037660743968047104,SV-OS-OIP-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-OS-SQLND-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.25,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-01,5037675042849505280,SV-OS-SQLND-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-OS-SQLND-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.22,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-02,1635303243365441536,SV-OS-SQLND-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-OS-TIME-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,OS Updates,SV-OS-TIME-01,3751094916779089920,SV-OS-TIME-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-OS-UPS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.180,OS Updates,SV-OS-UPS-01,3655450426126028800,SV-OS-UPS-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Reboot Required,2026-07-10 08:35,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q2,SV-OS-WDS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.31,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-WSUS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.32,OS Updates,SV-OS-WSUS-01,7631324831867908096,SV-OS-WSUS-01,Microsoft Windows Server 2025 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,,Yes
+Wartungsplan 2024 - Q2,SV-PB-HV-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.100.51,OS Updates & Treiber,SV-PB-HV-01,572883608847360000,SV-PB-HV-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-08-04 15:33,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-PB-PRB-01,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.100.21,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-OS-PRB-02,Autoinstall,Microsoft Windows Server 2019 Standard,10.100.15.36,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-PRINT-06,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.143,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-PSG-CIM-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.21,OS Updates,SV-PSG-CIM-01,1306826073592401920,SV-PSG-CIM-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-PSG-CIM-02,Gruppe 4,Microsoft Windows Server 2019 Standard,10.100.101.22,OS Updates,SV-PSG-CIM-02,1306822750629892096,SV-PSG-CIM-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-PSG-DC-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.11,OS Updates,SV-PSG-DC-01,1951775646885867520,SV-PSG-DC-01,Microsoft Windows Server 2019 Standard,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q2,SV-PSG-HIST-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.23,OS Updates,SV-PSG-HIST-01,1951772813461549056,SV-PSG-HIST-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q2,SV-STO-NA-01,Gruppe 4,DSM 7.0.1-42218,10.100.15.91,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-STO-SYNO-01,Gruppe 4,DSM 7.2.1,10.100.15.95,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-STO-SYNO-02,Gruppe 4,DSM 7.2.1,10.100.15.96,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SV-VCENTER-02,Kein Update,,135.135.32.129,,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SW-EDV-01,Kein Update,,135.135.32.117,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SW-FCS-01,Kein Update,,135.135.32.118,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q2,SW-FCS-02,Kein Update,,135.135.32.119,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q2,USV-ESX-101,Kein Update,,10.100.15.171,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q1,10.100.62.210,Network,,10.100.62.210,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q1,10.100.62.211,Network,,10.100.62.211,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q1,10.100.62.212,Network,,10.100.62.212,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q1,10.100.62.213,Network,,10.100.62.213,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q1,10.100.62.214,Network,,10.100.62.214,Keine - Muss durch SWIT gewartet werden,,,,,,,,,,No
+Wartungsplan 2024 - Q1,CL-DMZ-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.66.21,OS Updates + Hilfs-Applikationen,CL-DMZ-01,5037667291742158848,CL-DMZ-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Fully Patched,2026-06-24 11:07,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q1,CL-DMZ-02,AutoInstall,Windows 10,10.100.66.22,OS Updates + Hilfs-Applikationen,CL-DMZ-02,5230301397412839424,CL-DMZ-02,Microsoft Windows 10 Pro,Standalone Workstation,OFFLINE,Fully Patched,2026-02-19 07:03,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q1,NET-FW-01,Network,FortiOS v6.4.7 build1911 (GA),10.100.15.1,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-01,Network,,10.100.15.201,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-02,Network,,10.100.15.202,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-03,Network,,10.100.15.203,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-04,Network,,10.100.15.204,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-05,Network,,10.100.15.205,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-06,Network,,10.100.15.206,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-10,Network,,10.100.15.210,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-20,Network,,10.100.15.220,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-21,Network,,10.100.15.221,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-22,Network,,10.100.15.222,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-23,Network,,10.100.15.223,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-24,Network,,10.100.15.224,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-SW-25,Network,,10.100.15.225,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-TEMP-01,Network,,10.100.15.181,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-TEMP-02,Network,,10.100.15.182,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-UPS-02,Network,,10.100.15.174,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-UPS-03,Network,,10.100.15.173,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-UPS-04,Network,,10.100.15.176,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-UPS-05,Network,,10.100.15.177,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-UPS-06,Network,,10.100.15.178,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-UPS-11,Network,,10.100.15.175,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-UPS-12,Network,,10.100.15.179,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-01,Network,,10.100.15.231,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-02,Network,,10.100.15.232,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-03,Network,,10.100.15.233,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-04,Network,,10.100.15.234,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-05,Network,,10.100.15.235,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-06,Network,,10.100.15.236,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-07,Network,,10.100.15.237,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-08,Network,,10.100.15.238,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-09,Network,,10.100.15.239,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-10,Network,,10.100.15.240,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-11,Network,,10.100.15.241,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-12,Network,,10.100.15.242,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-13,Network,,10.100.15.245,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-AP-14,Network,,10.100.15.246,Keine - Push Updates durch NET-WL-CTL-01,,,,,,,,,,No
+Wartungsplan 2024 - Q1,NET-WL-CTL-01,Network,,10.100.15.230,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-AD-02,Retired,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.139,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-APP-03,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.101,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-APP-04,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.105,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-BACKUP-01,Retired,Microsoft Windows Server 2012 R2 Standard,135.135.32.121,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-BI-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.131,OS Updates,SV-BI-APP-01,1635266155442036736,SV-BI-APP-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-BI-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.132,OS Updates,SV-BI-DB-01,5230272169006956544,SV-BI-DB-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-CEE-APP-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.121,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-CEE-BI-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.135,OS Updates,SV-CEE-BI-01,1635266204389564416,SV-CEE-BI-01,Microsoft Windows Server 2012 R2 Datacenter,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-CEE-DB-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.125,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-CEE-SOM-01,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.126,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-CEE-TST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.38,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-CEE-TST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.39,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-CODESOFT,Gruppe 1,Windows 7 Professional,10.100.15.110,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-EOTEC-01,Gruppe 1,Microsoft Windows Server 2016 Standard,10.100.15.108,OS Updates,sv-eotec-01,1635274626426167296,sv-eotec-01,Microsoft Windows Server 2016 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-ESX-01,Kein Update,esxi 6.5 Update 3,135.135.32.122,,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-ESX-02,Kein Update,esxi 6.5 Update 3,135.135.32.123,,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-BAK-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.18,OS Updates,SV-OS-BAK-01,9014460145718771712,SV-OS-BAK-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-06-01 08:07,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q1,SV-OS-BAK-02,Gruppe 3,Ubuntu 20 LTS,10.100.15.19,OS Updates,sv-os-bak-02,1498006163785166848,sv-os-bak-02,ubuntu,debian,OFFLINE,,2026-04-23 09:04,,Yes
+Wartungsplan 2024 - Q1,SV-OS-BAK-03,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.50,OS Updates,SV-OS-BAK-03,123850073147936768,SV-OS-BAK-03.ditzlernet.local,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-04-21 12:04,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q1,SV-OS-IH-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,"OS Updates, PHP",SV-OS-IH-01,1635282824172363776,SV-OS-IH-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q1,SV-OS-IR-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.111,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-MAILRELAY-01,Retired,Ubuntu 20 LTS,10.100.15.37,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-NU-CLUSTER-01,Nutanix,AHV,,OS Updates + Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-NUPRX-01,Gruppe 3,N/A,10.100.2.16,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OR-CS-01,Gruppe 2,,10.100.62.34,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OR-CS-02,Gruppe 2,,10.100.62.33,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OR-CS-03,Gruppe 2,,10.100.62.32,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-ADC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.40,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-AV-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-AV-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.33,NUR OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-AVST-01,Retired,Microsoft Windows Server 2019 Standard,10.100.15.66,OS Updates + TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-AVST-02,Retired,Microsoft Windows Server 2019 Standard,10.100.15.67,OS Updates + TrendMicro,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-FILE-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.15,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-GDSN-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.141,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-GDSN-APP-02,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.142,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-BITST-01,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-BITST-02,AutoInstall,Microsoft Windows Server 2012 R2 Datacenter,10.15.100.134,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-DC-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.11,OS Updates,SV-OS-DC-01,3793236466891575296,SV-OS-DC-01,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q1,SV-OS-DC-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.12,OS Updates,SV-OS-DC-02,1516517069427871744,SV-OS-DC-02,Microsoft Windows Server 2019 Datacenter,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q1,SV-GDSN-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.145,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-NLQA-APP-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.128,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-NLQA-DB-01,Gruppe 2,Microsoft Windows Server 2012 R2 Datacenter,10.100.15.129,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-MGT-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.15,OS Updates + Applikationen,SV-OS-MGT-01,1291279533970051072,SV-OS-MGT-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Auto-Update-2,Yes
+Wartungsplan 2024 - Q1,SV-OR-DS-01,Gruppe 2,,10.100.62.31,Firmware Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-SAGE-01,Gruppe 2,Microsoft Windows Server 2019 Standard,10.100.15.34,OS Updates,SV-OS-SAGE-01,3751120303047319552,SV-OS-SAGE-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Reboot Required,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-OS-PWR-01,Gruppe 1,Microsoft Windows Server 2019 Standard,10.100.15.109,OS Updates,SV-OS-PWR-01,3751094959217057792,SV-OS-PWR-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-OS-OIP-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.106,OS Updates,SV-OS-OIP-01,5037660743968047104,SV-OS-OIP-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-OS-SQLND-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.25,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-01,5037675042849505280,SV-OS-SQLND-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-OS-SQLND-02,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.22,OS Updates + SQL mit Cluster aware update,SV-OS-SQLND-02,1635303243365441536,SV-OS-SQLND-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Fully Patched,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-OS-TIME-01,Gruppe 3,Microsoft Windows Server 2019 Standard,10.100.15.16,OS Updates,SV-OS-TIME-01,3751094916779089920,SV-OS-TIME-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-OS-UPS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.180,OS Updates,SV-OS-UPS-01,3655450426126028800,SV-OS-UPS-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Reboot Required,2026-07-10 08:35,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q1,SV-OS-WDS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.31,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-WSUS-01,AutoInstall,Microsoft Windows Server 2019 Standard,10.100.15.32,OS Updates,SV-OS-WSUS-01,7631324831867908096,SV-OS-WSUS-01,Microsoft Windows Server 2025 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,,Yes
+Wartungsplan 2024 - Q1,SV-PB-HV-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.100.51,OS Updates & Treiber,SV-PB-HV-01,572883608847360000,SV-PB-HV-01,Microsoft Windows Server 2019 Standard,Server,OFFLINE,Install Pending,2026-08-04 15:33,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-PB-PRB-01,Gruppe 4,Microsoft Windows Server 2019 Standard,10.100.100.21,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-OS-PRB-02,Gruppe 4,Microsoft Windows Server 2019 Standard,10.100.15.36,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-PRINT-06,Gruppe 1,Microsoft Windows Server 2012 R2 Datacenter,135.135.32.143,OS Updates,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-PSG-CIM-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.21,OS Updates,SV-PSG-CIM-01,1306826073592401920,SV-PSG-CIM-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-PSG-CIM-02,Gruppe 4,Microsoft Windows Server 2019 Standard,10.100.101.22,OS Updates,SV-PSG-CIM-02,1306822750629892096,SV-PSG-CIM-02,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-PSG-DC-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.11,OS Updates,SV-PSG-DC-01,1951775646885867520,SV-PSG-DC-01,Microsoft Windows Server 2019 Standard,Server (Domain Controller),ONLINE,Install Pending,2026-08-06 08:17,SV_SW-Std_Auto-Update-1,Yes
+Wartungsplan 2024 - Q1,SV-PSG-HIST-01,Gruppe 4,Windows Server 2019 Datacenter,10.100.101.23,OS Updates,SV-PSG-HIST-01,1951772813461549056,SV-PSG-HIST-01,Microsoft Windows Server 2019 Standard,Server,ONLINE,Install Pending,2026-08-06 08:16,SV_SW-Std_Update-ScanOnly,Yes
+Wartungsplan 2024 - Q1,SV-STO-NA-01,Gruppe 4,DSM 7.0.1-42218,10.100.15.91,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-STO-SYNO-01,Gruppe 4,DSM 6.2.4-25556,10.100.15.95,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-STO-SYNO-02,Gruppe 4,DSM 6.2.4-25556,10.100.15.96,DSM Update,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SV-VCENTER-02,Kein Update,,135.135.32.129,,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SW-EDV-01,Network,,135.135.32.117,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SW-FCS-01,Network,,135.135.32.118,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q1,SW-FCS-02,Network,,135.135.32.119,Keine - Legacy Umgebung,,,,,,,,,,No
+Wartungsplan 2024 - Q1,USV-ESX-101,Kein Update,,10.100.15.171,Keine - Legacy Umgebung,,,,,,,,,,No
