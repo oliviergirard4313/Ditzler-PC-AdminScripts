@@ -8,6 +8,12 @@
 # Auf einer normalen Admin-Arbeitsstation schlaegt Get-Credentials mit
 # einem DPAPI-Fehler fehl, wenn dort keine eigene, frische credentials.xml
 # existiert (siehe CLAUDE.md, Abschnitt Verwaltung der Zugangsdaten).
+#
+# Kein SuperOps-Skript und laeuft auch nicht per Aufgabenplanung - reines
+# Einmalig-Werkzeug, das man von irgendwo aus (z.B. C:\Service\Scripts,
+# oder direkt von einer Kopie auf dem Desktop) manuell ausfuehrt und danach
+# wieder loeschen kann. Braucht nur lesenden Zugriff auf
+# Ditzler-Powershell-Lib.psm1/credentials.xml in C:\ProgramData\Superops\Scripts.
 # ==========================================================
 # Autor    : GIO / Claude
 # Version  : 1.0
@@ -15,10 +21,10 @@
 #
 # Zweck:
 #   Fuer das TV-Dashboard (Raspberry Pi + grosser Bildschirm im Buero,
-#   siehe geplantes Generate SuperOps PRTG Dashboard.ps1) wird eine
-#   GraphQL-Abfrage benoetigt, die aktive SuperOps-Alerts MIT Volltext
-#   liefert (nicht nur Zaehler wie im TV View Report). Die Bibliothek
-#   kennt bisher nur die Mutation createAlert (Alert-Typ hat mindestens
+#   siehe Generate SuperOps Alert Dashboard.ps1) wird eine GraphQL-Abfrage
+#   benoetigt, die aktive SuperOps-Alerts MIT Volltext liefert (nicht nur
+#   Zaehler wie im TV View Report). Die Bibliothek kennt bisher nur die
+#   Mutation createAlert (Alert-Typ hat mindestens
 #   message/severity/description/assetId/id, siehe
 #   Ditzler-Powershell-Lib.psm1 Send-SuperOpsAlert) - eine Abfrage zum
 #   AUFLISTEN bestehender Alerts wurde noch nie empirisch bestaetigt.
@@ -30,13 +36,15 @@
 #   3. Versucht probeweise einen naheliegenden Aufruf (getAlertList,
 #      analog zu getAssetList/getUserList) und gibt das Rohergebnis aus.
 #
-#   Ergebnis bitte in Generate SuperOps PRTG Dashboard.ps1 uebernehmen
+#   Ergebnis bitte in Generate SuperOps Alert Dashboard.ps1 uebernehmen
 #   (Funktion Get-SuperOpsActiveAlerts) - dort ist der aktuelle
 #   Platzhalter klar als ZU VALIDIEREN markiert.
 #
 # Verhalten:
 #   - Rein lesend, keine Aenderung in SuperOps.
 # ==========================================================
+
+try { Clear-Host } catch { }
 
 $SuperOpsScriptDir = "C:\ProgramData\Superops\Scripts"
 $LibPath           = Join-Path $SuperOpsScriptDir "Ditzler-Powershell-Lib.psm1"
@@ -150,4 +158,4 @@ catch {
     Write-Host "Probeaufruf getAlertList fehlgeschlagen: $($_.Exception.Message)" -ForegroundColor Red
 }
 
-Write-Host "`nFertig. Ergebnisse oben in Generate SuperOps PRTG Dashboard.ps1 (Get-SuperOpsActiveAlerts) uebernehmen." -ForegroundColor Cyan
+Write-Host "`nFertig. Ergebnisse oben in Generate SuperOps Alert Dashboard.ps1 (Get-SuperOpsActiveAlerts) uebernehmen." -ForegroundColor Cyan

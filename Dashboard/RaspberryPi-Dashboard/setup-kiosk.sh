@@ -1,49 +1,49 @@
 #!/bin/bash
 # ==========================================================
 # setup-kiosk.sh
-# Einmalig auf dem Raspberry Pi ausfuehren (als Benutzer "pi" bzw. dem
-# Benutzer, der bei Systemstart automatisch angemeldet wird - siehe
+# Einmalig auf dem Raspberry Pi ausfuehren (als Benutzer "dashboard" bzw.
+# dem Benutzer, der bei Systemstart automatisch angemeldet wird - siehe
 # raspi-config, System Options -> Boot / Auto Login -> Desktop Autologin).
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 2.0
+# Version  : 3.0
 # Datum    : 2026-08-12
 #
 # Zweck:
-#   Richtet den TV-Dashboard-Kiosk ein (grosser Bildschirm im Buero):
-#   ZWEI Chromium-Fenster werden automatisch gestartet und nebeneinander
-#   gekachelt (je eines pro Haelfte des Bildschirms), ohne Adressleiste/
-#   Raender:
-#     - links : SuperOps-Alerts (von SV-OS-PRB-01 generierte Seite,
-#               siehe Generate SuperOps Alert Dashboard.ps1)
-#     - rechts: PRTG-Map (native PRTG-Ansicht, eigene URL von GIO)
-#   Kein zusammengesetztes HTML mehr auf Skriptseite noetig - jede
-#   Quelle bleibt in ihrem eigenen Fenster/eigener Session.
+#   Richtet den TV-Dashboard-Kiosk ein (grosser Bildschirm im Buero): EIN
+#   Chromium-Fenster wird automatisch im Vollbild gestartet, ohne
+#   Adressleiste/Raender. Die Seite selbst (siehe Generate SuperOps Alert
+#   Dashboard.ps1 auf SV-OS-PRB-01) ist zweispaltig aufgebaut - PRTG-Map
+#   als <iframe> links, SuperOps-Alerts/Ticket-Statistiken rechts - beides
+#   in EINER Seite, EINEM Fenster.
 #
-#   Architekturentscheidung 12.08.2026: SuperOps' eigener Report-Editor
-#   kennt kein Widget mit rohem Alert-Text (nur Tabellen/Zaehler), daher
-#   bleibt fuer SuperOps eine eigene generierte Seite noetig. PRTG hat
-#   dagegen eine native Map-Ansicht, die GIO direkt bereitstellt - PRTG
-#   wird hier NICHT gescraped (PRTG soll mittelfristig sowieso abgeloest
-#   werden, siehe CLAUDE.md).
-#
-#   Fensterkachelung per --window-position/--window-size ist unter X11
-#   zuverlaessig, unter Wayland/labwc (Standard auf Raspberry Pi OS
-#   Bookworm) dagegen NICHT garantiert. Dieses Skript versucht deshalb,
-#   den Pi per raspi-config auf X11 umzustellen (Advanced Options ->
-#   Wayland -> X11). Falls das fehlschlaegt oder nicht gewuenscht ist,
-#   muss die Fensterkachelung unter Wayland/labwc manuell geprueft
-#   werden (z.B. ueber eine labwc-Layout-Regel statt CLI-Flags).
+# Architekturverlauf (siehe CLAUDE.md fuer die volle Geschichte):
+#   - v1.0: eine Seite, serverseitig aus SuperOps- UND PRTG-Daten
+#     zusammengebaut (PRTG wurde damals noch gescraped).
+#   - v2.0: PRTG wird NICHT mehr gescraped (native Map-Ansicht von GIO
+#     bereitgestellt) - dafuer ZWEI gekachelte Chromium-Fenster, eines pro
+#     Quelle, weil eine serverseitig zusammengebaute Seite mit der reinen
+#     Alert-Textquelle (SuperOps) allein nicht mehr ausreichte.
+#   - v3.0 (diese Version): zurueck zu EINEM Fenster - PRTGs mapshow.htm
+#     ist von Paessler explizit fuers Einbetten gedacht (kein X-Frame-
+#     Options-Problem zu erwarten), daher jetzt als <iframe> direkt in der
+#     von SV-OS-PRB-01 generierten Seite statt eines zweiten Fensters.
+#     Erspart das fehleranfaellige X11-Fenstertuiling (--window-position/
+#     --window-size funktioniert unter Wayland/labwc nicht zuverlaessig) -
+#     mit nur einem Fenster ist X11 vs. Wayland fuer die Darstellung
+#     irrelevant, --kiosk uebernimmt das Vollbild in beiden Faellen.
 #
 #   Alte, nicht mehr funktionierende Kiosk-Konfiguration wird NICHT
 #   geloescht, sondern nach ~/kiosk-backup-<Datum>/ verschoben.
 #
 # Verwendung:
-#   0. ZUERST import-root-ca.sh ausfuehren (die IIS-Site auf SV-OS-PRB-01
-#      nutzt ein Zertifikat aus der internen Ditzler-CA - ohne dieses
-#      Root-Zertifikat auf dem Pi zeigt das linke Kiosk-Fenster nur eine
-#      Zertifikatswarnung statt des Dashboards, siehe import-root-ca.sh)
-#   1. SUPEROPS_URL und PRTG_URL unten anpassen
+#   0. import-root-ca.sh ausfuehren (importiert das interne Ditzler-Root-
+#      Zertifikat - noetig, damit Chromium der IIS-Site auf SV-OS-PRB-01
+#      vertraut).
+#   1. DASHBOARD_URL unten anpassen, falls sich die IIS-Adresse aendert
+#      (Standard passt bereits: die Seite enthaelt PRTG+SuperOps zusammen,
+#      die PRTG-Map-URL wird NICHT hier, sondern per -PrtgMapUrl Parameter
+#      in Generate SuperOps Alert Dashboard.ps1 auf SV-OS-PRB-01 gesetzt).
 #   2. ./setup-kiosk.sh
 #   3. sudo reboot
 #
@@ -53,12 +53,41 @@
 #   2.0 (2026-08-12): Umgestellt auf zwei gekachelte Fenster - PRTG wird
 #                      nicht mehr gescraped, sondern nativ als eigene
 #                      Map-URL angezeigt (siehe CLAUDE.md)
+#   2.1 (2026-08-12): Live-Test auf sv-os-HAL9000 (echter Pi-Hostname):
+#                      (1) chromium-browser-Binary existiert auf neueren
+#                      Raspberry Pi OS Versionen nicht mehr (nur noch das
+#                      leere Uebergangspaket) - Binaryname wird jetzt per
+#                      "command -v" ermittelt statt hartkodiert.
+#                      (2) "Unlock Keyring"-Dialog blockierte den Start
+#                      trotz --password-store=basic (das wirkt nur auf
+#                      Chromiums Passwortmanager, nicht auf den generellen
+#                      gnome-keyring-Autostart) - per XDG-Autostart-Override
+#                      (Hidden=true) unterdrueckt.
+#                      (3) NET::ERR_CERT_COMMON_NAME_INVALID (fehlendes SAN
+#                      im IIS-Zertifikat, kein Root-CA-Vertrauensproblem) -
+#                      --ignore-certificate-errors als Uebergangsloesung,
+#                      bis das Zertifikat mit korrektem SAN neu ausgestellt
+#                      wird (separate PKI-Aufgabe).
+#   2.2 (2026-08-12): PKI-Aufgabe aus v2.1 erledigt - neues Zertifikat mit
+#                      korrektem SAN (sv-os-prb-01.ditzlernet.local +
+#                      sv-os-prb-01) ueber ditzler-CA (Template "WebServer")
+#                      ausgestellt und in IIS gebunden. Live auf dem Pi
+#                      bestaetigt: keine Zertifikatswarnung mehr.
+#                      --ignore-certificate-errors dadurch nicht mehr noetig,
+#                      wieder entfernt (Zertifikatspruefung laeuft normal).
+#   3.0 (2026-08-12): Architekturwechsel auf Wunsch von GIO: PRTG-Map als
+#                      <iframe> in dieselbe SuperOps-Seite eingebettet
+#                      (siehe Generate SuperOps Alert Dashboard.ps1 v6.0),
+#                      statt eines zweiten separaten Kiosk-Fensters. Dieses
+#                      Skript dadurch stark vereinfacht: nur noch EIN
+#                      Chromium-Aufruf, keine Aufloesungsermittlung/
+#                      Fensterpositionierung mehr, X11-vs-Wayland-Frage
+#                      damit hinfaellig.
 # ==========================================================
 
 set -e
 
-SUPEROPS_URL="https://sv-os-prb-01.ditzlernet.local/dashboard/"
-PRTG_URL="__PRTG_MAP_URL_HIER_EINTRAGEN__"
+DASHBOARD_URL="https://sv-os-prb-01.ditzlernet.local/DashboardSuperops/dashboard.html"
 
 AUTOSTART_DIR="$HOME/.config/autostart"
 DESKTOP_FILE="$AUTOSTART_DIR/ditzler-dashboard.desktop"
@@ -91,49 +120,66 @@ if [ -d "$AUTOSTART_DIR" ]; then
     done
 fi
 
-echo "=== 3. Wrapper-Skript fuer 2 gekachelte Kiosk-Fenster einrichten ==="
+# --password-store=basic (siehe unten) verhindert nur, dass Chromiums
+# Passwortmanager den Systemschluesselbund nutzt - der gnome-keyring-Daemon
+# startet trotzdem bei jeder Anmeldung und wird z.B. fuer OSCrypt (Cookie-
+# Verschluesselung) angefragt, was auf diesem Kiosk-Konto ohne automatische
+# PAM-Entsperrung zum blockierenden "Unlock Keyring"-Dialog fuehrt (live
+# beobachtet 12.08.2026 auf sv-os-HAL9000, trotz --password-store=basic).
+# Kein Passwort/keine Secrets auf diesem Kiosk noetig - der Daemon wird
+# deshalb per Standard-XDG-Override (Hidden=true in ~/.config/autostart/,
+# gleicher Dateiname wie die Vorgabe unter /etc/xdg/autostart/) komplett
+# unterdrueckt, statt zu versuchen, ihn automatisch zu entsperren.
+echo "=== 2b. Autostart des gnome-keyring-Daemons unterdruecken ==="
+mkdir -p "$AUTOSTART_DIR"
+for KEYRING_ID in gnome-keyring-pkcs11 gnome-keyring-secrets gnome-keyring-ssh; do
+    cat > "$AUTOSTART_DIR/${KEYRING_ID}.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=${KEYRING_ID} (disabled)
+Exec=true
+Hidden=true
+EOF
+done
+echo "Keyring-Autostart per Override deaktiviert (wirkt nach Neustart)."
+
+echo "=== 3. Wrapper-Skript fuer das Kiosk-Fenster einrichten ==="
 mkdir -p "$BIN_DIR"
 
 cat > "$WRAPPER_SCRIPT" <<'WRAPPER_EOF'
 #!/bin/bash
-# Wird von ditzler-dashboard.desktop automatisch gestartet. Ermittelt die
-# aktuelle Bildschirmaufloesung und startet 2 Chromium-Kiosk-Fenster nebeneinander,
-# je mit eigenem Profil (--user-data-dir), da Chromium bei geteiltem Profil
-# einfach einen neuen Tab im bestehenden Fenster oeffnen wuerde statt ein
-# zweites Fenster.
+# Wird von ditzler-dashboard.desktop automatisch gestartet.
 
-SUPEROPS_URL="__SUPEROPS_URL_PLACEHOLDER__"
-PRTG_URL="__PRTG_URL_PLACEHOLDER__"
+DASHBOARD_URL="__DASHBOARD_URL_PLACEHOLDER__"
 
-# Aufloesung ermitteln (X11). Fallback auf 1920x1080, falls xrandr fehlschlaegt
-# (z.B. unter Wayland/labwc ohne XWayland).
-RESOLUTION=$(xrandr 2>/dev/null | grep '\*' | head -n1 | awk '{print $1}')
-if [ -z "$RESOLUTION" ]; then
-    RESOLUTION="1920x1080"
+# Binaername variiert je nach Raspberry Pi OS Version - "chromium-browser" ist
+# auf neueren Systemen (Debian 13/trixie-Basis) nur noch ein leeres
+# Uebergangspaket ohne echtes Binary, das echte Binary heisst "chromium"
+# (bestaetigt 12.08.2026 auf sv-os-HAL9000: "chromium-browser: command not
+# found", "which chromium" -> /usr/bin/chromium). Beide Namen probieren,
+# statt einen hart zu kodieren.
+if command -v chromium-browser >/dev/null 2>&1; then
+    CHROMIUM_BIN="chromium-browser"
+elif command -v chromium >/dev/null 2>&1; then
+    CHROMIUM_BIN="chromium"
+else
+    echo "FEHLER: Weder 'chromium-browser' noch 'chromium' gefunden. 'sudo apt install chromium' ausfuehren." >&2
+    exit 1
 fi
-SCREEN_W=$(echo "$RESOLUTION" | cut -d'x' -f1)
-SCREEN_H=$(echo "$RESOLUTION" | cut -d'x' -f2)
-HALF_W=$((SCREEN_W / 2))
 
-COMMON_FLAGS="--kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-translate --overscroll-history-navigation=0 --check-for-update-interval=31536000 --incognito"
+# --password-store=basic: zusaetzlich zur Autostart-Unterdrueckung des
+# Keyring-Daemons oben (fuer Chromiums eigenen Passwortmanager). Unproblematisch,
+# da --incognito ohnehin nichts dauerhaft speichert.
+COMMON_FLAGS="--kiosk --noerrdialogs --disable-infobars --disable-session-crashed-bubble --disable-translate --overscroll-history-navigation=0 --check-for-update-interval=31536000 --incognito --password-store=basic"
 
-chromium-browser $COMMON_FLAGS \
-    --window-position=0,0 --window-size=${HALF_W},${SCREEN_H} \
-    --user-data-dir="$HOME/.config/chromium-kiosk-superops" \
-    "$SUPEROPS_URL" &
-
-sleep 3
-
-chromium-browser $COMMON_FLAGS \
-    --window-position=${HALF_W},0 --window-size=${HALF_W},${SCREEN_H} \
-    --user-data-dir="$HOME/.config/chromium-kiosk-prtg" \
-    "$PRTG_URL" &
+"$CHROMIUM_BIN" $COMMON_FLAGS \
+    --user-data-dir="$HOME/.config/chromium-kiosk-dashboard" \
+    "$DASHBOARD_URL" &
 WRAPPER_EOF
 
-# URLs in den Wrapper einsetzen (kein sed -i mit Sonderzeichen im Pfad,
+# URL in den Wrapper einsetzen (kein sed -i mit Sonderzeichen im Pfad,
 # deshalb ueber Platzhalter + einfaches sed ohne Sonderzeichenprobleme)
-sed -i "s#__SUPEROPS_URL_PLACEHOLDER__#${SUPEROPS_URL}#g" "$WRAPPER_SCRIPT"
-sed -i "s#__PRTG_URL_PLACEHOLDER__#${PRTG_URL}#g" "$WRAPPER_SCRIPT"
+sed -i "s#__DASHBOARD_URL_PLACEHOLDER__#${DASHBOARD_URL}#g" "$WRAPPER_SCRIPT"
 
 chmod +x "$WRAPPER_SCRIPT"
 echo "Wrapper-Skript geschrieben: $WRAPPER_SCRIPT"
@@ -160,23 +206,9 @@ else
     echo "raspi-config nicht gefunden - Blanking manuell pruefen (xset s off -dpms unter X11)."
 fi
 
-echo "=== 6. Desktop-Umgebung pruefen (X11 empfohlen fuer verlaessliche Fensterkachelung) ==="
-if [ "$XDG_SESSION_TYPE" != "x11" ]; then
-    echo "ACHTUNG: Aktuelle Sitzung ist '$XDG_SESSION_TYPE', nicht 'x11'."
-    echo "Fensterpositionierung (--window-position/--window-size) ist unter"
-    echo "Wayland/labwc nicht zuverlaessig garantiert. Empfehlung: ueber"
-    echo "'sudo raspi-config' -> Advanced Options -> Wayland -> X11 umstellen,"
-    echo "dann neu starten und dieses Skript erneut pruefen (die Fenster nach"
-    echo "einem Neustart beobachten - liegen sie nebeneinander, ist alles ok)."
-fi
-
-if [ "$PRTG_URL" = "__PRTG_MAP_URL_HIER_EINTRAGEN__" ]; then
-    echo ""
-    echo "ACHTUNG: PRTG_URL wurde noch nicht gesetzt (Zeile am Skriptanfang) -"
-    echo "das rechte Kiosk-Fenster zeigt aktuell eine ungueltige URL."
-fi
-
 echo ""
-echo "Fertig. SuperOps: $SUPEROPS_URL"
-echo "        PRTG    : $PRTG_URL"
+echo "Fertig. Dashboard-URL: $DASHBOARD_URL"
+echo "(enthaelt PRTG-Map + SuperOps-Alerts in einer Seite - PRTG-URL wird"
+echo "per -PrtgMapUrl Parameter in Generate SuperOps Alert Dashboard.ps1"
+echo "auf SV-OS-PRB-01 gesetzt, nicht hier auf dem Pi)"
 echo "Jetzt neu starten: sudo reboot"

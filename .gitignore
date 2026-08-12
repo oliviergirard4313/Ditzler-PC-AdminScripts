@@ -8,3 +8,10 @@ Tools/
 # Logs et fichiers temporaires
 *.log
 *.tmp
+
+# Sortie generee par Dashboard/Generate SuperOps Alert Dashboard.ps1 (test local),
+# pas du code source
+Dashboard/dashboard.html
+
+# Exportiertes Root-CA-Zertifikat (Umgebungsartefakt, kein Quellcode)
+Dashboard/RaspberryPi-Dashboard/*.crt

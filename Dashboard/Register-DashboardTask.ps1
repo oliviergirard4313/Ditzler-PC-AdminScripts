@@ -27,19 +27,24 @@
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
     [string]$TaskName = "Ditzler Dashboard Generator",
-    [string]$ScriptPath = "C:\ProgramData\Superops\Scripts\Generate SuperOps Alert Dashboard.ps1"
+    [string]$ScriptPath = "C:\Service\Scripts\DashboardSuperops\Generate SuperOps Alert Dashboard.ps1"
 )
 
 if (-not (Test-Path -LiteralPath $ScriptPath)) {
-    throw "Generator-Skript nicht gefunden unter: $ScriptPath (zuerst dorthin kopieren, analog zu Ditzler-Powershell-Lib.psm1/credentials.xml)."
+    throw "Generator-Skript nicht gefunden unter: $ScriptPath (zuerst dorthin kopieren - C:\Service\Scripts ist der Ablageort fuer per Aufgabenplanung ausgefuehrte Skripte, nicht C:\ProgramData\Superops\Scripts, das gehoert SuperOps selbst)."
 }
 
 $Action = New-ScheduledTaskAction -Execute "powershell.exe" `
     -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`""
 
+# [TimeSpan]::MaxValue ergibt eine Dauer ("P99999999DT23H59M59S"), die das
+# Task-Scheduler-XML-Schema als ausserhalb des gueltigen Bereichs ablehnt
+# (live auf SV-OS-PRB-01 bestaetigt: "task XML contains a value which is
+# incorrectly formatted or out of range"). 10 Jahre sind praktisch
+# "unbegrenzt" fuer diesen Zweck und werden vom Schema akzeptiert.
 $Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) `
     -RepetitionInterval (New-TimeSpan -Minutes 1) `
-    -RepetitionDuration ([TimeSpan]::MaxValue)
+    -RepetitionDuration (New-TimeSpan -Days 3650)
 
 $Principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 
@@ -49,8 +54,13 @@ $Settings = New-ScheduledTaskSettingsSet `
     -ExecutionTimeLimit (New-TimeSpan -Minutes 5)
 
 if ($PSCmdlet.ShouldProcess($TaskName, "Aufgabe registrieren/ersetzen")) {
+    # -ErrorAction Stop, damit ein fehlgeschlagenes Register-ScheduledTask (z.B.
+    # ungueltiges Trigger-XML) den Erfolgstext unten NICHT trotzdem ausgibt -
+    # live beobachtet: Register-ScheduledTask schreibt bei diesem Fehler nur
+    # einen NICHT-terminierenden Fehler, das Skript lief bisher trotzdem bis
+    # zur "registriert"-Meldung durch, obwohl die Aufgabe nicht angelegt wurde.
     Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger `
-        -Principal $Principal -Settings $Settings -Force | Out-Null
+        -Principal $Principal -Settings $Settings -Force -ErrorAction Stop | Out-Null
 
     Write-Host "Aufgabe '$TaskName' registriert (alle 1 Minute, als SYSTEM)." -ForegroundColor Green
     Write-Host "Manuell testen mit: Start-ScheduledTask -TaskName '$TaskName'" -ForegroundColor Cyan
