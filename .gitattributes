@@ -1,0 +1,5 @@
+# Shell-Skripte fuer den Raspberry Pi muessen LF-Zeilenenden behalten,
+# sonst schlaegt die Shebang-Zeile (#!/bin/bash) unter Linux mit
+# "bad interpreter" fehl, wenn jemand die Datei auf einem Windows-
+# Checkout bearbeitet/kopiert statt direkt per git auf dem Pi zu klonen.
+*.sh text eol=lf
