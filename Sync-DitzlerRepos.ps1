@@ -14,8 +14,8 @@
 # (diesen Ordner selbst) gar nicht kannten).
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 1.1
-# Datum    : 2026-08-06
+# Version  : 1.2
+# Datum    : 2026-08-10
 #
 # Aenderungsverlauf:
 #   1.0 (2026-08-06): Erste Version (Pull/Push fuer alle drei Repos).
@@ -26,6 +26,19 @@
 #                     VisualStudio Code", fuer die Verteilung an
 #                     Kollegen. Von Start-VSCode-With-GitSync.ps1 nach
 #                     jedem VS-Code-Schliessen aufgerufen.
+#   1.2 (2026-08-10): Copy-DitzlerScriptsToTeams zeigt jetzt auf die
+#                     Wurzel von "VisualStudio Code" statt auf den
+#                     Unterordner "...\Superops" - Aufrufer uebergibt
+#                     seither "C:\Admin\Ditzler" (alle drei Repos plus
+#                     PatchManagement) statt nur Ditzler-Scripts-
+#                     Superops als SourcePath (Wunsch von GIO,
+#                     2026-08-10). ACHTUNG: robocopy /MIR loescht dabei
+#                     alles im Teams-Zielordner, das nicht (mehr) unter
+#                     C:\Admin\Ditzler existiert - beim Umstieg hat das
+#                     bewusst den alten Unterordner "...\Superops" sowie
+#                     die dort bereits vorhandenen, nicht von diesem
+#                     Sync verwalteten Eintraege "Intune\" und
+#                     "MaintenanceVMs on HyperV.txt" entfernt.
 # ==========================================================
 
 $Global:DitzlerRepos = @(
@@ -122,7 +135,7 @@ function Copy-DitzlerScriptsToTeams {
         [string]$SourcePath
     )
 
-    $TeamsPath = Join-Path $env:USERPROFILE "Louis Ditzler AG\Informatik - General\Skripten\VisualStudio Code\Superops"
+    $TeamsPath = Join-Path $env:USERPROFILE "Louis Ditzler AG\Informatik - General\Skripten\VisualStudio Code"
 
     if (-not (Test-Path -LiteralPath $SourcePath)) {
         Write-DitzlerSyncLog "FEHLER Teams-Kopie: Quelle nicht gefunden: $SourcePath"

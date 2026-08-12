@@ -17,8 +17,8 @@
 # verwenden.
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 2.1
-# Datum    : 2026-08-06
+# Version  : 2.2
+# Datum    : 2026-08-10
 #
 # Aenderungsverlauf:
 #   1.0 (22.07.2026): Erste Version.
@@ -37,6 +37,11 @@
 #                     nach jedem VS-Code-Schliessen ergaenzt, fuer die
 #                     Verteilung an Kollegen ueber den Teams-Ordner
 #                     "Louis Ditzler AG\Informatik - General\Skripten".
+#   2.2 (2026-08-10): Teams-Kopie auf die gesamte lokale Arbeitskopie
+#                     C:\Admin\Ditzler erweitert (SourcePath statt
+#                     $RepoPath), da Copy-DitzlerScriptsToTeams jetzt auf
+#                     die Wurzel von "...\VisualStudio Code" zeigt statt
+#                     auf den Unterordner "...\Superops" (Wunsch von GIO).
 #
 # Voraussetzung: "code" muss im PATH sein (Standard bei VS-Code-
 # Installation mit "Add to PATH" aktiviert, hier bestaetigt).
@@ -66,4 +71,6 @@ Invoke-DitzlerRepoSync -Mode Push
 # --- Kopie nach Teams (Louis Ditzler AG\Informatik - General\Skripten\VisualStudio Code) ---
 # Fuer die Verteilung an Kollegen - unabhaengig vom Git-Push, immer nach jedem
 # VS-Code-Schliessen aktualisiert, damit der Teams-Ordner den aktuellen Stand zeigt.
-Copy-DitzlerScriptsToTeams -SourcePath $RepoPath
+# Seit 2026-08-10 wird die gesamte lokale Arbeitskopie C:\Admin\Ditzler gespiegelt
+# (alle drei Repos plus PatchManagement), nicht mehr nur Ditzler-Scripts-Superops.
+Copy-DitzlerScriptsToTeams -SourcePath "C:\Admin\Ditzler"
