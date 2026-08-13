@@ -281,11 +281,9 @@ direkt, stattdessen das Array in einer eigenen Anweisung aufbauen statt ueber ei
 - ~~Ticket-Statistikzeile live pruefen~~ - erledigt (12.08.2026, SV-OS-PRB-01, v4.3): Open/Overdue-
   Zaehler und Unassigned-Titelliste liefern korrekte, mit der SuperOps-UI uebereinstimmende Werte
   (siehe Abschnitt "Ticket-Statistikzeile" oben fuer die volle Debugging-Geschichte).
-- PRTG-Map von GIO auf ca. 960x1080 px neu erstellen (Split-Layout, siehe oben - der
-  Vorgabewert im `-PrtgMapUrl` Parameter ist noch die alte, fuer ein volles Fenster gedachte
-  Map mit 1700x1000) und deren URL in `Generate SuperOps Alert Dashboard.ps1` auf SV-OS-PRB-01
-  eintragen (NICHT mehr in `setup-kiosk.sh` - das PRTG-Fenster auf dem Pi entfaellt seit v3.0,
-  siehe Architektur-Historie oben Punkt 6).
+- ~~PRTG-Map neu erstellen~~ - erledigt (12.08.2026, v6.1). GIO hat die Map passend fuer das
+  Split-Layout auf 960x1080 px erstellt (`id=2914`), URL als Vorgabewert von `-PrtgMapUrl` in
+  `Generate SuperOps Alert Dashboard.ps1` hinterlegt.
 - ~~Internes Root-CA-Zertifikat exportieren~~ - erledigt (12.08.2026, per PowerShell statt
   `certlm.msc`, siehe `import-root-ca.sh`-Eintrag oben).
 - ~~IIS-Zertifikat mit gueltigem SAN neu ausstellen~~ - erledigt (12.08.2026). Das urspruengliche

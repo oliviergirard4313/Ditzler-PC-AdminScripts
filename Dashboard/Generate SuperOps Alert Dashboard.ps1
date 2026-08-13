@@ -3,7 +3,7 @@
 # ==========================================================
 # Skript: Generate SuperOps Alert Dashboard
 # Autor: GIO / Claude
-# Version: 6.0
+# Version: 6.1
 # Datum: 2026-08-12
 #
 # Zweck:
@@ -154,6 +154,8 @@
 #                      Tabelle/Unassigned/Alerts) rechts in einer neuen
 #                      .superops-pane. Bei leerem -PrtgMapUrl erscheint ein
 #                      Platzhalter-Hinweis statt eines kaputten iframes.
+#   6.1 (2026-08-12): Echte PRTG-Map-URL von GIO eingetragen (passend fuer
+#                      das Split-Layout auf 960x1080 px erstellt, id=2914).
 # ==========================================================
 
 param(
@@ -162,13 +164,11 @@ param(
 
     # Native PRTG-Map-Ansicht (mapshow.htm), als <iframe> in dieselbe Seite
     # eingebettet - seit v6.0 (siehe Aenderungsverlauf) statt eines zweiten
-    # Chromium-Kiosk-Fensters auf dem Pi. Der Vorgabewert ist die urspruenglich
-    # von GIO gezeigte Beispiel-Map (fuer EIN volles Kiosk-Fenster gedacht,
-    # width=1700 height=1000) - beim neuen Split-Layout (1920x1080-Bildschirm,
-    # PRTG nimmt nur die linke Haelfte) sollte die Map auf ca. 960x1080 px neu
-    # erstellt werden; die neue URL hier eintragen, sobald verfuegbar. Leer
-    # lassen zeigt einen Platzhalter-Hinweis statt eines kaputten iframes.
-    [string]$PrtgMapUrl = "https://sv-os-prtg-01.ditzlernet.local/public/mapshow.htm?id=2001&mapid=1A35514B-E08F-4B7C-90B8-CD1774AE8CA3"
+    # Chromium-Kiosk-Fensters auf dem Pi. Map von GIO passend fuer das
+    # Split-Layout auf 960x1080 px erstellt (linke Haelfte eines
+    # 1920x1080-Bildschirms). Leer lassen zeigt einen Platzhalter-Hinweis
+    # statt eines kaputten iframes.
+    [string]$PrtgMapUrl = "https://sv-os-prtg-01.ditzlernet.local/public/mapshow.htm?id=2914&mapid=9135FB6C-9FE1-4A07-BDB3-3B575603DFF4"
 )
 
 # ------------------ PFADE ----------------------
