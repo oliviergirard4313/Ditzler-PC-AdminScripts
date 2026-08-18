@@ -12,13 +12,12 @@
 # Sync-LocalRepo-OnLogon.ps1 genutzt).
 # Betrifft NUR diese lokale Arbeitskopie (Heim-PC/Arbeitslaptop von GIO) -
 # hat nichts mit den SuperOps-Skripten selbst zu tun. Ersetzt den
-# direkten Doppelklick auf Ditzler-SuperOps-Scripts.code-workspace -
-# stattdessen dieses Skript (bzw. die Desktop-Verknuepfung darauf)
-# verwenden.
+# direkten Doppelklick auf ein .code-workspace-File - stattdessen dieses
+# Skript (bzw. die Desktop-Verknuepfung darauf) verwenden.
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 2.2
-# Datum    : 2026-08-10
+# Version  : 2.3
+# Datum    : 2026-08-18
 #
 # Aenderungsverlauf:
 #   1.0 (22.07.2026): Erste Version.
@@ -42,18 +41,23 @@
 #                     $RepoPath), da Copy-DitzlerScriptsToTeams jetzt auf
 #                     die Wurzel von "...\VisualStudio Code" zeigt statt
 #                     auf den Unterordner "...\Superops" (Wunsch von GIO).
+#   2.3 (2026-08-18): Oeffnet jetzt den kombinierten Workspace
+#                     Ditzler-AdminScripts-All.code-workspace (Wurzel von
+#                     C:\Admin\Ditzler) statt Ditzler-SuperOps-Scripts.
+#                     code-workspace (nur der Superops-Unterordner) -
+#                     Wunsch von GIO, deckt alle drei Repos in einem
+#                     VS-Code-Fenster ab.
 #
 # Voraussetzung: "code" muss im PATH sein (Standard bei VS-Code-
 # Installation mit "Add to PATH" aktiviert, hier bestaetigt).
 # ==========================================================
 
-$RepoPath      = "C:\Admin\Ditzler\Ditzler-Scripts-Superops"
-$WorkspaceFile = Join-Path $RepoPath "Ditzler-SuperOps-Scripts.code-workspace"
+$WorkspaceFile = "C:\Admin\Ditzler\Ditzler-AdminScripts-All.code-workspace"
 
 . (Join-Path $PSScriptRoot "Sync-DitzlerRepos.ps1")
 
-if (-not (Test-Path -LiteralPath $RepoPath)) {
-    Show-DitzlerSyncFailure "Repo-Pfad nicht gefunden:`n$RepoPath"
+if (-not (Test-Path -LiteralPath $WorkspaceFile)) {
+    Show-DitzlerSyncFailure "Workspace-Datei nicht gefunden:`n$WorkspaceFile"
     exit 1
 }
 
