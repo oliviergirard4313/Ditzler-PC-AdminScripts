@@ -596,6 +596,7 @@ function New-DashboardHtml {
   .logo-dots span { width: 1.7vh; height: 1.7vh; border-radius: 50%; display: inline-block; }
   .stats-bar { flex: 0 0 auto; padding: 0.8vh 2vw; background: #181818; border-bottom: 2px solid #333; }
   .stats-bar th { text-align: left; padding: 0.4vh 1vw; font-size: 1.3vh; color: #999; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #333; }
+  .stats-bar th.col-tech-num { text-align: center; }
   .stats-bar td { padding: 0.35vh 1vw; font-size: 1.8vh; border-bottom: none; }
   .col-tech { width: 50%; font-weight: 600; }
   .col-tech-num { width: 25%; text-align: center; font-weight: 700; }
