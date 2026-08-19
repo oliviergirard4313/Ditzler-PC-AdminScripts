@@ -95,13 +95,19 @@ existiert, muss es beim ersten Deployment angelegt werden.
   Namensarray) - "Nicht zugewiesen" ist dabei einfach der Fall `technician == null`, immer als
   letzte Zeile. Die Titelliste der nicht zugewiesenen Tickets bleibt unveraendert darunter.
   Seit v6.0 zusaetzlich Parameter `-PrtgMapUrl`: bettet die native PRTG-Map als `<iframe>` in
-  die LINKE Haelfte derselben Seite ein (SuperOps-Inhalt rechts, `.superops-pane`) - der Pi
-  braucht dadurch nur noch EIN Kiosk-Fenster statt zwei (siehe Architektur-Historie oben, Punkt
-  6, und `setup-kiosk.sh` v3.0). Leerer `-PrtgMapUrl` zeigt einen Platzhalter-Hinweis statt
-  eines kaputten iframes. Vorgabewert ist GIOs urspruengliches Beispiel
-  (`.../mapshow.htm?id=2001&mapid=...`, fuer ein volles Fenster mit 1700x1000 gedacht) - fuer
-  das neue Split-Layout auf einem 1920x1080-Bildschirm sollte die Map auf ca. 960x1080 px
-  (halbe Breite, volle Hoehe) neu erstellt werden.
+  dieselbe Seite ein (`.superops-pane`/`.prtg-pane`) - der Pi braucht dadurch nur noch EIN
+  Kiosk-Fenster statt zwei (siehe Architektur-Historie oben, Punkt 6, und `setup-kiosk.sh`
+  v3.0). Leerer `-PrtgMapUrl` zeigt einen Platzhalter-Hinweis statt eines kaputten iframes.
+  **Layout seit v6.2 (GIO-Wunsch):** uebereinander statt nebeneinander - SuperOps oben
+  (`flex: 2`, 2/3 der Hoehe), PRTG unten (`flex: 1`, 1/3 der Hoehe). Bei 1920x1080 entspricht
+  das ca. **1920x360 px** fuer die PRTG-Map (volle Breite, ein Drittel der Hoehe). GIO hat die
+  Map in PRTG auf diese Groesse angepasst (19.08.2026, per PRTGs Embed-Panel bestaetigt) - `id`
+  und `mapid` blieben dabei unveraendert, nur die physische Groesse wurde angepasst, daher war
+  **keine Aenderung** am Vorgabewert von `-PrtgMapUrl` (`id=2914`) noetig.
+  **Reihenfolge seit v6.3 (GIO-Wunsch):** innerhalb `.superops-pane` erst Alerts, dann nicht
+  zugewiesene Tickets (Anzahl + Titelliste), dann die Techniker-Tabelle (`$StatsBarHtml`) - vorher
+  stand die Techniker-Tabelle direkt unter dem Header. Zusaetzlich Schriftgroesse der
+  Techniker-Tabelle verkleinert (`.stats-bar th`/`td`), da sie zu viel Platz beanspruchte.
 
   **Entstehungsgeschichte des Filtermechanismus (12.08.2026, mehrere Korrekturen - siehe
   Skriptkopf-Aenderungsverlauf v4.0-4.2 fuer die volle Chronologie):** Erster Versuch nutzte
@@ -281,9 +287,11 @@ direkt, stattdessen das Array in einer eigenen Anweisung aufbauen statt ueber ei
 - ~~Ticket-Statistikzeile live pruefen~~ - erledigt (12.08.2026, SV-OS-PRB-01, v4.3): Open/Overdue-
   Zaehler und Unassigned-Titelliste liefern korrekte, mit der SuperOps-UI uebereinstimmende Werte
   (siehe Abschnitt "Ticket-Statistikzeile" oben fuer die volle Debugging-Geschichte).
-- ~~PRTG-Map neu erstellen~~ - erledigt (12.08.2026, v6.1). GIO hat die Map passend fuer das
-  Split-Layout auf 960x1080 px erstellt (`id=2914`), URL als Vorgabewert von `-PrtgMapUrl` in
-  `Generate SuperOps Alert Dashboard.ps1` hinterlegt.
+- ~~PRTG-Map fuer Nebeneinander-Layout erstellen~~ - erledigt (12.08.2026, v6.1, 960x1080 px,
+  `id=2914`).
+- ~~PRTG-Map fuer Uebereinander-Layout (v6.2) anpassen~~ - erledigt (19.08.2026). GIO hat
+  dieselbe Map (`id=2914`) in PRTG auf ca. 1920x360 px angepasst statt eine neue zu erstellen -
+  `id`/`mapid` unveraendert, daher keine Aenderung an `-PrtgMapUrl` noetig.
 - ~~Internes Root-CA-Zertifikat exportieren~~ - erledigt (12.08.2026, per PowerShell statt
   `certlm.msc`, siehe `import-root-ca.sh`-Eintrag oben).
 - ~~IIS-Zertifikat mit gueltigem SAN neu ausstellen~~ - erledigt (12.08.2026). Das urspruengliche

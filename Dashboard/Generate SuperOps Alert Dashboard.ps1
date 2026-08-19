@@ -3,8 +3,8 @@
 # ==========================================================
 # Skript: Generate SuperOps Alert Dashboard
 # Autor: GIO / Claude
-# Version: 6.1
-# Datum: 2026-08-12
+# Version: 6.3
+# Datum: 2026-08-19
 #
 # Zweck:
 #   Erzeugt eine HTML-Seite mit dem VOLLTEXT aktiver SuperOps-Alerts, fuer
@@ -156,6 +156,22 @@
 #                      Platzhalter-Hinweis statt eines kaputten iframes.
 #   6.1 (2026-08-12): Echte PRTG-Map-URL von GIO eingetragen (passend fuer
 #                      das Split-Layout auf 960x1080 px erstellt, id=2914).
+#   6.2 (2026-08-12): Layout auf Wunsch von GIO von nebeneinander (links/
+#                      rechts) auf uebereinander umgestellt: SuperOps oben
+#                      (2/3 der Hoehe), PRTG unten (1/3). Bei 1920x1080
+#                      entspricht das ca. 1920x360 px fuer die PRTG-Map -
+#                      muss dafuer neu erstellt werden (bisherige Map war
+#                      fuer 960x1080 gedacht, siehe v6.1). Footer (Zeitstempel)
+#                      von "position: fixed" (haette sonst die PRTG-Flaeche
+#                      unten rechts ueberlappt) auf normalen Fluss am Ende
+#                      von .superops-pane umgestellt.
+#   6.3 (2026-08-19): Reihenfolge innerhalb .superops-pane auf Wunsch von GIO
+#                      geaendert: Alerts zuerst (bisher zuletzt), danach nicht
+#                      zugewiesene Tickets (Anzahl + Titelliste), danach die
+#                      Techniker-Tabelle (bisher zuerst als $StatsBarHtml direkt
+#                      unter dem Header). Reine HTML-Reihenfolge im body-String
+#                      von New-DashboardHtml, keine Aenderung an den Daten/
+#                      Abfragen/CSS-Klassen selbst.
 # ==========================================================
 
 param(
@@ -556,16 +572,17 @@ function New-DashboardHtml {
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 100%; height: 100%; overflow: hidden; background: #121212; color: #eee; font-family: "Segoe UI", Arial, sans-serif; }
-  /* Seit v6.0: body ist eine ZEILE (PRTG-Pane | SuperOps-Pane) statt einer
-     einzelnen Spalte - beide Quellen in EINER Seite/EINEM Kiosk-Fenster
-     statt zwei separaten Chromium-Fenstern auf dem Pi (spart das fehleranfaellige
-     X11-Fenstertuiling, siehe CLAUDE.md). */
-  body { display: flex; flex-direction: row; }
-  .prtg-pane { flex: 1; height: 100vh; background: #0a0a0a; border-right: 2px solid #333; }
+  /* Seit v6.0: body ist EINE Spalte statt einer separaten Zeile pro Quelle -
+     beide Quellen in EINER Seite/EINEM Kiosk-Fenster statt zwei separaten
+     Chromium-Fenstern auf dem Pi (spart das fehleranfaellige X11-
+     Fenstertuiling, siehe CLAUDE.md). Seit v6.2: uebereinander (SuperOps
+     oben 2/3, PRTG unten 1/3) statt nebeneinander - auf Wunsch von GIO. */
+  body { display: flex; flex-direction: column; }
+  .superops-pane { flex: 2; width: 100%; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+  .prtg-pane { flex: 1; width: 100%; min-height: 0; background: #0a0a0a; border-top: 2px solid #333; }
   .prtg-pane iframe { width: 100%; height: 100%; border: none; display: block; }
   .prtg-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #666; font-size: 2.2vh; padding: 2vw; }
   .prtg-placeholder span { font-size: 1.6vh; color: #555; margin-top: 1vh; }
-  .superops-pane { flex: 1; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
   /* Farbige Punkte + Verlaufslinie unter dem Header, angelehnt an das
      DITZLER-Logo (bunte Punkte ueber den Buchstaben) - der Rest bleibt
      bewusst dunkel/funktional fuer Lesbarkeit aus Bueroentfernung. */
@@ -578,8 +595,8 @@ function New-DashboardHtml {
   .logo-dots { display: inline-flex; gap: 0.4vw; }
   .logo-dots span { width: 1.7vh; height: 1.7vh; border-radius: 50%; display: inline-block; }
   .stats-bar { flex: 0 0 auto; padding: 0.8vh 2vw; background: #181818; border-bottom: 2px solid #333; }
-  .stats-bar th { text-align: left; padding: 0.5vh 1vw; font-size: 1.7vh; color: #999; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #333; }
-  .stats-bar td { padding: 0.6vh 1vw; font-size: 2.6vh; border-bottom: none; }
+  .stats-bar th { text-align: left; padding: 0.4vh 1vw; font-size: 1.3vh; color: #999; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #333; }
+  .stats-bar td { padding: 0.35vh 1vw; font-size: 1.8vh; border-bottom: none; }
   .col-tech { width: 50%; font-weight: 600; }
   .col-tech-num { width: 25%; text-align: center; font-weight: 700; }
   .col-tech-overdue { color: #fb8c00; }
@@ -597,21 +614,21 @@ function New-DashboardHtml {
   .col-message { color: #bbb; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .badge { display: inline-block; padding: 0.5vh 1.2vw; border-radius: 999px; font-size: 2.2vh; font-weight: 700; color: #111; white-space: nowrap; }
   .empty { padding: 3vh 0; font-size: 2.8vh; color: #777; }
-  .footer { position: fixed; bottom: 0; right: 0; padding: 0.6vh 1vw; font-size: 1.6vh; color: #555; }
+  .footer { flex: 0 0 auto; text-align: right; padding: 0.4vh 1vw; font-size: 1.6vh; color: #555; }
 </style>
 </head>
 <body>
-<div class="prtg-pane">$PrtgPaneHtml</div>
 <div class="superops-pane">
 <div class="header"><span class="logo-dots"><span style="background:#e63946"></span><span style="background:#f4a261"></span><span style="background:#e9c46a"></span><span style="background:#2a9d8f"></span><span style="background:#457b9d"></span></span>SuperOps Alerts</div>
-$StatsBarHtml
-$UnassignedHtml
 $(
     if ($HasAlerts) { "<div class=`"body`"><table><tbody>$($Rows.ToString())</tbody></table></div>" }
     else { "<div class=`"body`">$($Rows.ToString())</div>" }
 )
+$UnassignedHtml
+$StatsBarHtml
 <div class="footer">Aktualisiert: $GeneratedAt</div>
 </div>
+<div class="prtg-pane">$PrtgPaneHtml</div>
 </body>
 </html>
 "@
