@@ -74,7 +74,10 @@ $ManualOverrides = @{
     'SV-OS-DEV-01'   = @{ Cat = 'SV_SW-Std_Auto-Update-2'; Reason = 'Von GIO entschieden 06.08.2026' }
     'SV-OS-TIME-01'  = @{ Cat = 'SV_SW-Std_Auto-Update-2'; Reason = 'Von GIO entschieden 06.08.2026' }
     'SV-OS-CR-01'    = @{ Cat = 'SV_SW-Std_Auto-Update-2'; Reason = 'Von GIO entschieden 06.08.2026' }
-    'SV-OS-TIME-11'  = @{ Cat = 'SV_SW-Std_Auto-Update-2'; Reason = 'Von GIO entschieden 06.08.2026' }
+    # Entscheidung vom 06.08.2026 (Auto-Update-2) war ein Fehler - von GIO
+    # am 26.08.2026 korrigiert: bleibt in Manual-Update-Group-2 (bereits so
+    # in SuperOps gesetzt, das war die richtige Kategorie).
+    'SV-OS-TIME-11'  = @{ Cat = 'SV_SW-Std_Manual-Update-Group-2'; Reason = 'Von GIO bestaetigt 26.08.2026 (Korrektur der fruehreren Entscheidung vom 06.08.2026)' }
     'SV-OS-AV-01'    = @{ Cat = 'SV_SW-Std_Auto-Update-2'; Reason = 'Von GIO entschieden 06.08.2026' }
     # OIP-01 war zwischen Gruppe 2 und 3 mehrdeutig - GIO hat die Wahl
     # offen gelassen ("decide"). Vorlaeufig Gruppe 2 gewaehlt (erster
