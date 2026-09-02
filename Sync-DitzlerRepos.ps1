@@ -14,10 +14,19 @@
 # (diesen Ordner selbst) gar nicht kannten).
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 1.2
-# Datum    : 2026-08-10
+# Version  : 1.3
+# Datum    : 2026-08-27
 #
 # Aenderungsverlauf:
+#   1.3 (2026-08-27): Invoke-DitzlerRepoSync durch einen Mutex serialisiert -
+#                     die Logon-Aufgabe (Sync-LocalRepo-OnLogon.ps1) und ein
+#                     gleichzeitig manuell gestartetes Start-VSCode-With-
+#                     GitSync.ps1 pullten sonst parallel im selben Repo-
+#                     Ordner und liessen sich gegenseitig FETCH_HEAD
+#                     kaputtschreiben ("fatal: Cannot fast-forward to
+#                     multiple branches" am 20.08. und 27.08.2026, jeweils
+#                     Sekunden nach dem Logon-Trigger - kein echter Konflikt,
+#                     alle drei Repos waren danach clean/up-to-date).
 #   1.0 (2026-08-06): Erste Version (Pull/Push fuer alle drei Repos).
 #   1.1 (2026-08-06): Copy-DitzlerScriptsToTeams ergaenzt - kopiert
 #                     Ditzler-Scripts-Superops (ohne .git/.claude/old/
@@ -170,16 +179,43 @@ function Invoke-DitzlerRepoSync {
         [string]$Mode
     )
 
-    foreach ($Repo in $Global:DitzlerRepos) {
-        try {
-            if ($Mode -eq 'Pull') {
-                Sync-DitzlerRepoPull -Path $Repo | Out-Null
-            } else {
-                Sync-DitzlerRepoPush -Path $Repo | Out-Null
+    # Mutex verhindert, dass die Logon-Aufgabe (Sync-LocalRepo-OnLogon.ps1) und ein
+    # gleichzeitig gestartetes Start-VSCode-With-GitSync.ps1 im selben Repo-Ordner
+    # parallel fetchen/pullen - sonst ueberschreiben sich die FETCH_HEAD-Dateien
+    # gegenseitig und "git pull --ff-only" bricht mit "Cannot fast-forward to
+    # multiple branches" ab (beobachtet am 20.08. und 27.08.2026, jeweils direkt
+    # nach dem Logon-Trigger). Kein "Global\"-Praefix noetig, da beide Aufrufer
+    # immer in derselben interaktiven Benutzersitzung laufen.
+    $Mutex = New-Object System.Threading.Mutex($false, "DitzlerRepoSyncMutex")
+    $Acquired = $false
+    try {
+        $Acquired = $Mutex.WaitOne([TimeSpan]::FromMinutes(5))
+    } catch [System.Threading.AbandonedMutexException] {
+        Write-DitzlerSyncLog "WARNUNG: Sync-Mutex war verwaist (vorheriger Sync abgebrochen?) - trotzdem uebernommen"
+        $Acquired = $true
+    }
+
+    if (-not $Acquired) {
+        Write-DitzlerSyncLog "FEHLER: Sync-Mutex nach 5 Minuten nicht erhalten (Mode=$Mode) - vermutlich haengender paralleler Sync"
+        Show-DitzlerSyncFailure "Git-Sync blockiert: Ein anderer Sync-Vorgang laeuft offenbar schon zu lange (>5 Min).`nBitte pruefen, ob ein altes PowerShell-Fenster haengt."
+        return
+    }
+
+    try {
+        foreach ($Repo in $Global:DitzlerRepos) {
+            try {
+                if ($Mode -eq 'Pull') {
+                    Sync-DitzlerRepoPull -Path $Repo | Out-Null
+                } else {
+                    Sync-DitzlerRepoPush -Path $Repo | Out-Null
+                }
+            } catch {
+                Write-DitzlerSyncLog "AUSNAHME [$Repo]: $($_.Exception.Message)"
+                Show-DitzlerSyncFailure "Unerwarteter Fehler beim Git-Sync von $Repo`:`n$($_.Exception.Message)"
             }
-        } catch {
-            Write-DitzlerSyncLog "AUSNAHME [$Repo]: $($_.Exception.Message)"
-            Show-DitzlerSyncFailure "Unerwarteter Fehler beim Git-Sync von $Repo`:`n$($_.Exception.Message)"
         }
+    } finally {
+        $Mutex.ReleaseMutex()
+        $Mutex.Dispose()
     }
 }

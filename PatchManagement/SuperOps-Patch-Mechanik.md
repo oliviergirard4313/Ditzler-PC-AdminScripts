@@ -689,6 +689,47 @@ jamais mis à jour après sa création initiale. Deux causes distinctes trouvée
    `-WhatIf:$false` pour toute opération de suivi d'état/log (pas seulement au moment du fix
    initial), pas seulement pour les cmdlets "évidentes".
 
+## 6d. Exécution depuis un autre poste (cas Groupe 4 / réseau PSG isolé)
+
+**`[GIO 27.08.2026]`** Le Groupe 4 (`SV-PSG-*`, Grundstoff / réseau isolé) n'est pas joignable depuis
+le poste d'administration habituel — GIO doit lancer le pipeline depuis **`SV-PB-PRB-11`**. Ce que ça
+implique :
+
+**Fichiers à copier** (dans `C:\Admin\Ditzler\PatchManagement\` — chemin codé en dur dans le GUI via
+`$RepoDir` et dans les valeurs par défaut de `Invoke-ManualPatchRun.ps1` ; un autre emplacement
+oblige à passer `-LocalScriptPath`/`-OutputCsv` à la main ou à éditer `$RepoDir`) :
+- **Strict minimum pour lancer un run** : `Invoke-ManualPatchRun.ps1` **+**
+  `Install-ManualPatches-Local.ps1` (ce dernier n'est pas exécuté sur place : l'orchestrateur le lit
+  et le pousse lui-même sur chaque cible par WinRM — mais il doit être présent localement).
+- **Pour le GUI** : `PatchManagement-GUI.ps1` en plus.
+- **Pour le bouton "Server aktualisieren" du GUI** (liste live depuis SuperOps) :
+  `Get-AssetsByPatchCategory.ps1` en plus, et sur la machine il faut alors **PsExec** (cherché dans
+  `C:\ProgramData\chocolatey\bin\`, `C:\Tools\`, puis le PATH) ainsi que
+  `C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1` + `credentials.xml` (déposés par
+  l'agent SuperOps — présents si la machine est bien un asset SuperOps managé). Sans ça, le bouton
+  ne marche pas mais **le reste du GUI reste utilisable** : coller la liste des 3 serveurs dans le
+  champ "Manuell".
+- Pas nécessaires : `Set-AssetPatchCategory.ps1`, `Build-ServerPatchCategoryPlan.ps1`,
+  `Get-SuperOpsPatchInventar.ps1`, les `Test-*.ps1` et les CSV (sauf si on veut le mode `-Category`
+  de l'orchestrateur, qui lit `Server-Kategorien-Uebersicht.csv` — inutile ici puisque le Groupe 4
+  ne compte que 3 serveurs qu'on peut nommer directement en `-ServerList`).
+
+**`[AJOUTÉ 27.08.2026]`** Deux correctifs faits pour rendre ce scénario possible :
+1. **`-Credential` sur `Invoke-ManualPatchRun.ps1`** : jusqu'ici la connexion WinRM utilisait
+   toujours le contexte ambiant de l'utilisateur. Si `SV-PB-PRB-11` et les serveurs `SV-PSG-*` ne
+   sont pas dans le même domaine (la Grundstoff-Domäne est distincte de `ditzlernet.local`), le
+   ticket Kerberos ambiant ne suffit pas. Nouveau paramètre optionnel, propagé à `Test-WSMan`,
+   `New-PSSession` et au polling — sans lui, comportement inchangé. Usage :
+   `-Credential (Get-Credential)`.
+2. **Interpréteur du GUI plus codé en dur** : le bouton "Server aktualisieren" lançait
+   `psexec -s pwsh.exe ...` en dur ; `pwsh.exe` peut manquer (même piège que §7 point 12). Il
+   bascule maintenant automatiquement sur `powershell.exe` si PowerShell 7 est absent.
+
+**`[À VÉRIFIER SUR PLACE]`** Impossible à tester d'ici : `SV-PB-PRB-11` n'est pas résolvable depuis
+le réseau d'administration (attendu, c'est tout l'intérêt de la manœuvre). À confirmer une fois sur
+la machine : présence de PsExec et de `credentials.xml`, et surtout si le WinRM vers les `SV-PSG-*`
+passe avec le compte ambiant ou s'il faut `-Credential`.
+
 ## 7. Points ouverts / corrections potentielles
 
 1. **`[CONFIRMÉ, GIO 25.08.2026]`** — Les 4 groupes manuels **ne sont pas** 4 Device Categories
@@ -846,12 +887,20 @@ jamais mis à jour après sa création initiale. Deux causes distinctes trouvée
     `Status=Completed`, 4 updates détectées et listées correctement, aucune erreur, rien installé/
     rebooté (comme attendu sous `-WhatIf`). Confirme que le pipeline fonctionne aussi bien sur un
     vrai serveur de prod que sur les VM de test.
-13. **`[DERNIÈRE ÉTAPE, EN ATTENTE DE FENÊTRE DE MAINTENANCE — GIO 26.08.2026]`** Tout le pipeline
-    est maintenant validé techniquement (détection, installation UsoClient, reboot/reprise,
-    multi-serveurs, GUI avec élévation, écriture de catégorisation par API) — il ne manque plus
-    qu'un **premier run réel** (sans `-WhatIf`, installation + reboot effectifs) sur un serveur de
-    production pour considérer le projet opérationnel de bout en bout. GIO a choisi d'attendre une
-    fenêtre de maintenance appropriée plutôt que de le faire immédiatement (décision délibérée, pas
-    un blocage technique). Candidat déjà identifié et pré-testé en `-WhatIf` avec succès :
-    `SV-OS-APP-02` (seul membre du Groupe 3, 4 updates en attente au 26.08.2026) — mais le choix
-    final du serveur/de la date reste à confirmer par GIO le moment venu.
+13. **`[VALIDÉ 27.08.2026]`** Premier run **réel** (sans `-WhatIf`) du pipeline en production, sur
+    `sv-os-mgt-01` (choisi par GIO, hors des 4 groupes manuels — catégorie `Auto-Update-2`, servait
+    surtout à valider le pipeline lui-même). Avant le lancement : vérification systématique
+    connectivité/WinRM + utilisateurs connectés (`quser`) — une session RDP active de GIO
+    lui-même a été détectée et signalée, GIO a confirmé vouloir lancer quand même. Résultat :
+    `Status=Completed`, 0 update trouvée (serveur déjà "Fully Patched"), aucun reboot nécessaire,
+    aucune erreur — **le pipeline fonctionne en conditions réelles de bout en bout**.
+    **Bug annexe trouvé et corrigé** : `SuperOpsScanOk=False` avec
+    `SuperOpsScanError: "osupdater.exe nicht gefunden unter C:\Program Files\meineitrmm\bin\osupdater.exe"`
+    — le dossier de l'agent SuperOps sous `Program Files` n'est pas uniforme (`meineitrmm` sur les
+    VM de test, `superopsrmm` sur `sv-os-mgt-01`, probablement selon l'âge/le branding de
+    l'installation de l'agent — confirmé par GIO comme spécifique à ce serveur "un peu bricolé",
+    les autres ne devraient pas être concernés, mais le correctif reste une amélioration de
+    robustesse valable dans tous les cas). Corrigé : recherche dynamique
+    `C:\Program Files\*\bin\osupdater.exe` au lieu d'un chemin figé (exclut naturellement les
+    copies `patch\<version>\backup|extracted\bin\` laissées par l'auto-mise-à-jour de l'agent, qui
+    ont plus de niveaux de dossiers). Re-testé en `-RescanOnly` : `SuperOpsScanOk=True` confirmé.

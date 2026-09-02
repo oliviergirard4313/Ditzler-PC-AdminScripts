@@ -3,8 +3,8 @@
 # ==========================================================
 # Skript: Generate SuperOps Alert Dashboard
 # Autor: GIO / Claude
-# Version: 6.3
-# Datum: 2026-08-19
+# Version: 6.4
+# Datum: 2026-08-31
 #
 # Zweck:
 #   Erzeugt eine HTML-Seite mit dem VOLLTEXT aktiver SuperOps-Alerts, fuer
@@ -172,6 +172,15 @@
 #                      unter dem Header). Reine HTML-Reihenfolge im body-String
 #                      von New-DashboardHtml, keine Aenderung an den Daten/
 #                      Abfragen/CSS-Klassen selbst.
+#   6.4 (2026-08-31): Auf Wunsch von GIO zaehlen geschlossene Tickets nicht
+#                      mehr als "Ueberfaellig". $Script:OverdueTicketsCondition
+#                      hat dafuer einen zweiten Operanden bekommen
+#                      (status isNot "Closed", zusaetzlich zu
+#                      resolutionViolated is $true). Damit deckt sich die
+#                      Spalte "Ueberfaellig" mit dem, was in SuperOps noch
+#                      offen ist - vorher wurde jede jemals verletzte
+#                      SLA-Aufloesungszeit weitergezaehlt. "Resolved" bleibt
+#                      absichtlich enthalten (nur "Closed" ausgeschlossen).
 # ==========================================================
 
 param(
@@ -356,8 +365,10 @@ function Get-TruncatedText {
 #   - Open Tickets: status ist weder "Closed" noch "Resolved" -> 37 (Ziel It. GIOs
 #     Screenshot: 36 - Differenz durch neu erstelltes Ticket zwischen Messung und Test,
 #     kein Bug).
-#   - Overdue Tickets: resolutionViolated ist true -> 8 (exakte Uebereinstimmung mit
-#     GIOs Screenshot).
+#   - Overdue Tickets: resolutionViolated ist true UND status isNot "Closed" (seit
+#     v6.4 auf Wunsch von GIO): ein bereits geschlossenes Ticket zaehlt nicht mehr
+#     als ueberfaellig, auch wenn die SLA-Aufloesungszeit damals verletzt wurde.
+#     "Resolved" bleibt bewusst mitgezaehlt (nur "Closed" wird ausgeschlossen).
 # "Unassigned Tickets" ist keine eigene Bedingung, sondern die Open-Tickets-Liste
 # client-seitig auf technician == null gefiltert (identisch mit den 5 Tickets aus der
 # SuperOps-UI-Ansicht "Unassigned Tickets", per Live-Vergleich bestaetigt).
@@ -372,6 +383,7 @@ $Script:OverdueTicketsCondition = @{
     joinOperator = "AND"
     operands     = @(
         @{ joinOperator = "AND"; operands = @(@{ value = $true; operator = "is"; attribute = "resolutionViolated" }) }
+        @{ joinOperator = "AND"; operands = @(@{ value = "Closed"; operator = "isNot"; attribute = "status" }) }
     )
 }
 
@@ -442,9 +454,10 @@ query ($input: ListInfoInput!) {
 # "technician"-Werten, kein hartcodiertes Namensarray - erscheint automatisch
 # ein neuer Techniker in offenen/ueberfaelligen Tickets, taucht er hier auf).
 # $OpenTickets liefert die "Offene Tickets"-Spalte, $OverdueTickets die
-# "Ueberfaellig"-Spalte - unterschiedliche Ticket-Mengen (ein Ticket kann
-# ueberfaellig UND bereits geschlossen sein, siehe CLAUDE.md), daher zwei
-# getrennte Listen statt einer gemeinsamen Gruppierung.
+# "Ueberfaellig"-Spalte - unterschiedliche Ticket-Mengen (seit v6.4 sind
+# geschlossene Tickets in beiden Listen ausgeschlossen, ueberfaellig ist
+# aber z.B. auch ein "Resolved"-Ticket mit verletzter SLA-Aufloesungszeit),
+# daher zwei getrennte Listen statt einer gemeinsamen Gruppierung.
 function Get-TechnicianStats {
     param(
         [object[]]$OpenTickets,

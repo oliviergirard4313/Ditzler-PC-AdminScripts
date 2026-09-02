@@ -89,7 +89,14 @@ param(
     # legitim ueber eine Stunde dauern, siehe SuperOps-Patch-Mechanik.md §4.4/§6b.
     [int]$MaxWaitMinutes = 180,
     [int]$InstallPollSeconds = 30,
-    [int]$InstallMaxWaitMinutes = 45
+    [int]$InstallMaxWaitMinutes = 45,
+    # Nur noetig, wenn der ausfuehrende Benutzer auf den Zielservern nicht
+    # ohnehin schon per Kerberos als Admin gilt - z.B. beim Lauf aus einem
+    # anderen Forest/einer anderen Domaene heraus (Gruppe 4: SV-PSG-* liegt
+    # in der Grundstoff-Domaene im isolierten Netz). Ohne Angabe wird wie
+    # bisher der ambiente Kontext des aufrufenden Benutzers verwendet.
+    # Abfrage z.B. per: -Credential (Get-Credential)
+    [System.Management.Automation.PSCredential]$Credential
 )
 
 try { Clear-Host } catch { }
@@ -182,10 +189,18 @@ $LaunchFailures   = [System.Collections.Generic.List[object]]::new()
 $PendingServers   = [System.Collections.Generic.List[string]]::new()
 $Sessions         = @{}
 
+# Wird an jeden WinRM-Aufruf durchgereicht - leer, wenn kein -Credential
+# angegeben wurde (dann gilt wie bisher der ambiente Benutzerkontext).
+$CredSplat = @{}
+if ($Credential) {
+    $CredSplat['Credential'] = $Credential
+    Write-Info "Verwende explizite Anmeldedaten: $($Credential.UserName)"
+}
+
 foreach ($server in $Targets) {
     Write-Info "Pruefe WinRM-Erreichbarkeit von $server ..."
     try {
-        Test-WSMan -ComputerName $server -ErrorAction Stop | Out-Null
+        Test-WSMan -ComputerName $server @CredSplat -ErrorAction Stop | Out-Null
     }
     catch {
         Write-Host "  [FEHLER] WinRM auf $server nicht erreichbar: $($_.Exception.Message)" -ForegroundColor Red
@@ -195,7 +210,7 @@ foreach ($server in $Targets) {
 
     Write-Info "Starte auf $server ..."
     try {
-        $Session = New-PSSession -ComputerName $server -ErrorAction Stop
+        $Session = New-PSSession -ComputerName $server @CredSplat -ErrorAction Stop
 
         Invoke-Command -Session $Session -ErrorAction Stop -ScriptBlock {
             param($Path, $Content)
@@ -236,7 +251,7 @@ while ($PendingServers.Count -gt 0 -and ((Get-Date) - $PollStart) -lt (New-TimeS
     foreach ($server in @($PendingServers)) {
         $State = $null
         try {
-            $StateJson = Invoke-Command -ComputerName $server -ErrorAction Stop -ScriptBlock {
+            $StateJson = Invoke-Command -ComputerName $server @CredSplat -ErrorAction Stop -ScriptBlock {
                 param($Path)
                 if (Test-Path -LiteralPath $Path) { Get-Content -LiteralPath $Path -Raw }
             } -ArgumentList "C:\ProgramData\Superops\Scripts\_ManualPatchRun\$RunId\state.json"

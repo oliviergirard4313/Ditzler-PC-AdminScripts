@@ -4,7 +4,7 @@
     Kleine GUI, die die beiden Schritte des manuellen Patch-Ablaufs fuer die
     4 manuellen Gruppen zusammenfasst (siehe SuperOps-Patch-Mechanik.md
     §6c): Serverliste live aus SuperOps abrufen
-    (Get-AssetsByPatchCategory.ps1, intern per psexec -i -s auf SYSTEM
+    (Get-AssetsByPatchCategory.ps1, intern per psexec -s auf SYSTEM
     erhoben) und danach Invoke-ManualPatchRun.ps1 fuer die ausgewaehlten
     Server starten.
 
@@ -13,12 +13,12 @@
     das ist der Kontext, den Invoke-ManualPatchRun.ps1 fuer WinRM zu den
     Zielservern braucht (Kerberos-Double-Hop bricht unter SYSTEM). Nur der
     interne Aufruf von Get-AssetsByPatchCategory.ps1 (Button "Server
-    aktualisieren") wird gezielt per psexec -i -s auf SYSTEM angehoben
+    aktualisieren") wird gezielt per psexec -s auf SYSTEM angehoben
     (fuer credentials.xml/SuperOps-API), voellig getrennt vom restlichen
     Ablauf - dasselbe Muster wie die beiden separaten Skripte, nur in einem
     Fenster zusammengefasst.
 
-    WICHTIG - "Als Administrator ausfuehren": psexec -i -s braucht selbst
+    WICHTIG - "Als Administrator ausfuehren": psexec -s braucht selbst
     fuer eine rein lokale Erhoehung auf SYSTEM einen bereits erhoehten
     (High-Integrity-Token) aufrufenden Prozess, um den Dienst PSEXESVC
     installieren zu koennen - ohne das schlaegt der Button "Server
@@ -35,7 +35,7 @@
     siehe Ditzler-Memory). Vor dem ersten produktiven Einsatz bitte den
     Button "Server aktualisieren" einmal selbst pruefen. Falls psexec dort
     nicht mitspielt: alternativ Get-AssetsByPatchCategory.ps1 manuell per
-    psexec -i -s ausfuehren und das Ergebnis ins Feld "Manuell" einfuegen -
+    psexec -s ausfuehren und das Ergebnis ins Feld "Manuell" einfuegen -
     dieser Weg braucht kein psexec innerhalb der GUI.
 #>
 
@@ -48,7 +48,7 @@ $RepoDir            = "C:\Admin\Ditzler\PatchManagement"
 $HelperScript       = Join-Path $RepoDir "Get-AssetsByPatchCategory.ps1"
 $OrchestratorScript = Join-Path $RepoDir "Invoke-ManualPatchRun.ps1"
 
-# psexec -i -s braucht selbst fuer eine lokale Erhoehung auf SYSTEM einen
+# psexec -s braucht selbst fuer eine lokale Erhoehung auf SYSTEM einen
 # bereits erhoehten aufrufenden Prozess (installiert sonst seinen Dienst
 # PSEXESVC nicht) - ohne "Als Administrator ausfuehren" wuerde der Button
 # "Server aktualisieren" fehlschlagen oder eine eigene UAC-Eingabe mitten
@@ -107,7 +107,7 @@ if (-not $IsElevated) {
     $BtnRefresh.Enabled = $false
     $BtnRefresh.Text = "Server aktualisieren (Admin noetig)"
     $Tooltip = New-Object System.Windows.Forms.ToolTip
-    $Tooltip.SetToolTip($BtnRefresh, "Dieses Fenster wurde nicht 'Als Administrator ausfuehren' gestartet - psexec -i -s kann sonst SYSTEM nicht erreichen. Neu starten mit Rechtsklick > 'Als Administrator ausfuehren', oder das Feld 'Manuell' unten benutzen.")
+    $Tooltip.SetToolTip($BtnRefresh, "Dieses Fenster wurde nicht 'Als Administrator ausfuehren' gestartet - psexec -s kann sonst SYSTEM nicht erreichen. Neu starten mit Rechtsklick > 'Als Administrator ausfuehren', oder das Feld 'Manuell' unten benutzen.")
 }
 $Form.Controls.Add($BtnRefresh)
 
@@ -329,19 +329,19 @@ function Add-Log {
 }
 
 # ---------------------------------------------------------
-# "Server aktualisieren" - psexec -i -s Get-AssetsByPatchCategory.ps1 -Json
+# "Server aktualisieren" - psexec -s Get-AssetsByPatchCategory.ps1 -Json
 # ---------------------------------------------------------
 
 $BtnRefresh.Add_Click({
     if (-not $IsElevated) {
         [System.Windows.Forms.MessageBox]::Show(
-            "Dieses Fenster laeuft nicht erhoeht - psexec -i -s kann SYSTEM ohne 'Als Administrator ausfuehren' nicht erreichen. Fenster schliessen und per Rechtsklick > 'Als Administrator ausfuehren' neu starten, oder das Feld 'Manuell' unten benutzen.",
+            "Dieses Fenster laeuft nicht erhoeht - psexec -s kann SYSTEM ohne 'Als Administrator ausfuehren' nicht erreichen. Fenster schliessen und per Rechtsklick > 'Als Administrator ausfuehren' neu starten, oder das Feld 'Manuell' unten benutzen.",
             "Administratorrechte noetig", 'OK', 'Warning')
         return
     }
     if (-not $PsExecPath) {
         [System.Windows.Forms.MessageBox]::Show(
-            "PsExec.exe nicht gefunden (Chocolatey-Pfad und PATH geprueft). Liste kann nicht live abgerufen werden - Get-AssetsByPatchCategory.ps1 manuell per psexec -i -s ausfuehren und das Ergebnis ins Feld 'Manuell' einfuegen.",
+            "PsExec.exe nicht gefunden (Chocolatey-Pfad und PATH geprueft). Liste kann nicht live abgerufen werden - Get-AssetsByPatchCategory.ps1 manuell per psexec -s ausfuehren und das Ergebnis ins Feld 'Manuell' einfuegen.",
             "Fehler", 'OK', 'Error')
         return
     }
@@ -351,23 +351,90 @@ $BtnRefresh.Add_Click({
     $BtnRefresh.Enabled = $false
     [System.Windows.Forms.Application]::DoEvents()
 
+    # WICHTIG: kein "& $PsExecPath ... 2>&1" - PsExec schreibt seine eigenen
+    # Statuszeilen ("Connecting to local system...") auf STDERR, und unter
+    # Windows PowerShell wird jede per 2>&1 umgeleitete STDERR-Zeile eines
+    # nativen Programms als ErrorRecord in die Pipeline gestellt - bei
+    # $ErrorActionPreference = 'Stop' (siehe Kopf dieses Skripts) bricht
+    # bereits die ERSTE solche Zeile die ganze Zuweisung sofort ab, bevor
+    # die eigentliche -Json-Ausgabe je ankommt (beobachtet 27.08.2026 -
+    # Fehlermeldung war woertlich "Connecting to local system..."). Deshalb
+    # hier STDOUT/STDERR sauber in getrennte Dateien umleiten statt sie in
+    # der Pipeline zu mischen.
+    $StdOutFile = [System.IO.Path]::GetTempFileName()
+    $StdErrFile = [System.IO.Path]::GetTempFileName()
+    # Ergebnisdatei bewusst in C:\Windows\Temp: das Hilfsskript laeuft per
+    # psexec -s als SYSTEM und muss dort hineinschreiben koennen, waehrend
+    # diese GUI (normaler Admin) sie danach lesen muss - auf beides trifft
+    # das bei C:\Windows\Temp zu.
+    $ResultFile = Join-Path $env:SystemRoot "Temp\PatchMgmtGui_$([Guid]::NewGuid().ToString('N')).json"
     try {
-        $RawLines = & $PsExecPath -accepteula -nobanner -i -s pwsh.exe -NoProfile -File $HelperScript -Category $Category -Json 2>&1
-        Add-Log "--- psexec Rohausgabe (Server aktualisieren) ---"
-        $RawLines | ForEach-Object { Add-Log "  $_" }
+        # Kein "-i": der interaktive Modus haengt den Prozess an die
+        # Benutzersitzung/Desktop, wodurch dessen Ausgabe NICHT mehr in die
+        # umgeleiteten stdout/stderr-Dateien zurueckkommt - beobachtet
+        # 27.08.2026: ExitCode=0, aber ueberhaupt keine Skriptausgabe
+        # gefangen (nur PsExecs eigene Statuszeilen). Interaktivitaet wird
+        # hier gar nicht gebraucht (kein UI, nur Text zurueck), deshalb nur
+        # "-s" fuer die SYSTEM-Erhoehung.
+        # Interpreter nicht fest verdrahten: pwsh.exe (PowerShell 7) fehlt
+        # auf frisch aufgesetzten/nie gepatchten Servern (es kommt meist
+        # erst per Windows Update) - dann muss powershell.exe einspringen,
+        # sonst schlaegt der Button auf so einem Rechner fehl. Dasselbe
+        # Problem war schon bei Invoke-ManualPatchRun.ps1 aufgetreten
+        # (siehe dessen -Interpreter-Parameter).
+        $Interpreter = if (Get-Command pwsh.exe -ErrorAction SilentlyContinue) { 'pwsh.exe' } else { 'powershell.exe' }
+        # Ergebnis ueber eine Datei holen (-OutFile), nicht ueber STDOUT:
+        # Ditzler-Powershell-Lib.psm1 schreibt eigene Log- und Fehlerzeilen
+        # nach STDOUT, die sich nicht abschalten lassen und die JSON-Ausgabe
+        # zerstoeren wuerden (beobachtet 27.08.2026). STDOUT/STDERR werden
+        # weiterhin geloggt, aber nur noch zur Diagnose.
+        $ArgList = @('-accepteula', '-nobanner', '-s', $Interpreter, '-NoProfile', '-File', "`"$HelperScript`"", '-Category', "`"$Category`"", '-OutFile', "`"$ResultFile`"")
+        $Proc = Start-Process -FilePath $PsExecPath -ArgumentList $ArgList -RedirectStandardOutput $StdOutFile -RedirectStandardError $StdErrFile -NoNewWindow -Wait -PassThru
+        $StdOut = @(Get-Content -LiteralPath $StdOutFile -ErrorAction SilentlyContinue)
+        $StdErr = @(Get-Content -LiteralPath $StdErrFile -ErrorAction SilentlyContinue)
 
-        $JsonLine = $RawLines | Where-Object { $_ -match '^\s*\[.*\]\s*$' } | Select-Object -Last 1
-        if (-not $JsonLine) {
-            throw "Keine JSON-Zeile in der psexec-Ausgabe gefunden - siehe Log oben."
+        Add-Log "--- psexec stdout (Server aktualisieren, ExitCode=$($Proc.ExitCode)) ---"
+        $StdOut | ForEach-Object { Add-Log "  $_" }
+        if ($StdErr) {
+            Add-Log "--- psexec stderr ---"
+            $StdErr | ForEach-Object { Add-Log "  $_" }
         }
-        $Servers = @(ConvertFrom-Json -InputObject $JsonLine)
+
+        # Ursache eines Fehlschlags kann in BEIDEN Kanaelen stehen: eigene
+        # Fehlermeldungen des Hilfsskripts auf stderr, Meldungen der
+        # Ditzler-Powershell-Lib (z.B. "Key not valid for use in specified
+        # state" bei fehlgeschlagener DPAPI-Entschluesselung) dagegen auf
+        # stdout - beide werden oben ins Log geschrieben.
+        if (-not (Test-Path -LiteralPath $ResultFile)) {
+            throw "Das Hilfsskript hat keine Ergebnisdatei geschrieben (ExitCode=$($Proc.ExitCode)). Ursache siehe stdout/stderr im Log oben."
+        }
+        if ($Proc.ExitCode -ne 0) {
+            throw "Hilfsskript mit ExitCode=$($Proc.ExitCode) beendet - Ursache siehe stdout/stderr im Log oben."
+        }
+        $JsonLine = (Get-Content -LiteralPath $ResultFile -Raw).Trim()
+        if (-not $JsonLine) {
+            throw "Ergebnisdatei ist leer (ExitCode=$($Proc.ExitCode)) - siehe Log oben."
+        }
+        # [string[]]-Cast statt nur @(...): ConvertFrom-Json gibt unter
+        # Windows PowerShell 5.1 ein Array als EIN Objekt weiter (rollt es
+        # nicht aus), @() macht daraus also ein 1-elementiges Array, das das
+        # eigentliche Array enthaelt - die foreach-Schleife unten haette
+        # dann das ganze Array statt einzelner Servernamen bekommen
+        # (beobachtet 27.08.2026: "Cannot find an overload for ListViewItem
+        # and the argument count: 7" bei 7 Servern in Gruppe 1, weil
+        # New-Object ein Array als Argumentliste auffasst und splattet).
+        $Servers = @([string[]](ConvertFrom-Json -InputObject $JsonLine))
 
         $ChkListServers.Items.Clear()
         $LblStatus.Text = "Pruefe angemeldete Benutzer..."
         foreach ($s in $Servers) {
             [System.Windows.Forms.Application]::DoEvents()
             $Angemeldet = Get-LoggedOnUsersText -Server $s
-            $Item = New-Object System.Windows.Forms.ListViewItem($s)
+            # ::new([string]...) statt New-Object ...($s): New-Object fasst
+            # ein Array in Klammern als Argumentliste auf und splattet es
+            # (siehe Kommentar beim $Servers-Cast oben) - der explizite
+            # Cast auf [string] macht das strukturell unmoeglich.
+            $Item = [System.Windows.Forms.ListViewItem]::new([string]$s)
             [void]$Item.SubItems.Add($Angemeldet)
             $Item.Checked = $true
             if ($Angemeldet -notin @('keine', 'unbekannt (WinRM-Fehler)')) {
@@ -386,6 +453,7 @@ $BtnRefresh.Add_Click({
         [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Fehler beim Abrufen der Serverliste", 'OK', 'Error')
     }
     finally {
+        Remove-Item -LiteralPath $StdOutFile, $StdErrFile, $ResultFile -Force -ErrorAction SilentlyContinue
         $Form.Cursor = [System.Windows.Forms.Cursors]::Default
         $BtnRefresh.Enabled = $true
     }

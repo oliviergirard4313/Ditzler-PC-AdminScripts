@@ -511,17 +511,26 @@ try {
     Write-Info "Erzwinge lokale WUA-Neuerkennung..."
     Invoke-WuaDetectNow
 
-    $OsUpdaterPath = "C:\Program Files\meineitrmm\bin\osupdater.exe"
+    # Der Ordnername des SuperOps-Agenten unter "Program Files" ist nicht
+    # einheitlich - "meineitrmm" auf manchen Servern, "superopsrmm" auf
+    # anderen (vermutlich je nach Alter/Branding der Agent-Installation,
+    # beobachtet 27.08.2026 auf SV-OS-MGT-01). Deshalb dynamisch per
+    # Wildcard suchen statt einen einzigen Ordnernamen fest zu verdrahten.
+    # "...\patch\<Version>\backup|extracted\bin\osupdater.exe" (Reste einer
+    # Agent-Selbstaktualisierung) bewusst ausgeschlossen - nur die direkte
+    # "<AgentOrdner>\bin\osupdater.exe" ist die aktive Installation.
+    $OsUpdaterPath = Get-ChildItem -Path 'C:\Program Files\*\bin\osupdater.exe' -ErrorAction SilentlyContinue |
+        Select-Object -First 1 -ExpandProperty FullName
     if ($WhatIfPreference) {
         Write-Info "WhatIf: SuperOps Patch-Scan (osupdater.exe -patchAction patchScan) wuerde hier ausgeloest."
     }
-    elseif (Test-Path -LiteralPath $OsUpdaterPath) {
-        Write-Info "Loese SuperOps Patch-Scan aus (osupdater.exe -patchAction patchScan)..."
+    elseif ($OsUpdaterPath) {
+        Write-Info "Loese SuperOps Patch-Scan aus ($OsUpdaterPath -patchAction patchScan)..."
         & $OsUpdaterPath -patchAction patchScan | Out-Null
         $SuperOpsScanTriggered = $true
     }
     else {
-        $SuperOpsScanError = "osupdater.exe nicht gefunden unter $OsUpdaterPath"
+        $SuperOpsScanError = "osupdater.exe nicht gefunden unter C:\Program Files\*\bin\osupdater.exe"
     }
 }
 catch {

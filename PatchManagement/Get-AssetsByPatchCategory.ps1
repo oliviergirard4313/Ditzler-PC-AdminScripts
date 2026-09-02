@@ -37,8 +37,18 @@
 
 .PARAMETER Json
     Unterdrueckt die lesbare Konsolenausgabe und gibt nur ein JSON-Array der
-    gefundenen Servernamen auf STDOUT aus - fuer maschinelle Auswertung
-    (z.B. durch die GUI, PatchManagement-GUI.ps1).
+    gefundenen Servernamen auf STDOUT aus. NUR fuer manuelle Aufrufe
+    geeignet - fuer maschinelle Auswertung stattdessen -OutFile benutzen,
+    siehe dort.
+
+.PARAMETER OutFile
+    Schreibt das JSON-Array der gefundenen Servernamen in diese Datei
+    (UTF-8, ohne BOM). Fuer maschinelle Auswertung der EINZIG verlaessliche
+    Weg: Ditzler-Powershell-Lib.psm1 schreibt eigene Log-/Fehlerzeilen nach
+    STDOUT (beobachtet 27.08.2026), die sich nicht unterdruecken lassen und
+    eine reine JSON-Ausgabe auf STDOUT unbrauchbar machen wuerden. Wird auch
+    im Fehlerfall geschrieben (dann ein leeres Array), damit der Aufrufer
+    immer eine wohlgeformte Datei vorfindet.
 
 .EXAMPLE
     psexec -i -s pwsh.exe -NoProfile -File .\Get-AssetsByPatchCategory.ps1 -Category "SV_SW-Std_Manual-Update-Group-2"
@@ -47,7 +57,8 @@
 param(
     [Parameter(Mandatory)]
     [string]$Category,
-    [switch]$Json
+    [switch]$Json,
+    [string]$OutFile
 )
 
 try { Clear-Host } catch { }
@@ -62,7 +73,19 @@ $KnownCategories = @(
 
 function Write-Log {
     param([string]$Msg, [string]$Level = 'INFO')
-    if ($Json) { return }
+    # Im -Json-Modus darf NICHTS nach STDOUT, sonst wird die JSON-Ausgabe
+    # unbrauchbar - Fehler/Warnungen aber trotzdem nach STDERR schreiben
+    # statt sie ganz zu verschlucken: STDERR ist ein getrennter Kanal (die
+    # GUI faengt und zeigt ihn separat an). Ohne das blieb bei einem Fehler
+    # nur "[]" + ExitCode 1 ohne jeden Hinweis auf die Ursache - genau das
+    # ist am 27.08.2026 auf SV-PB-PRB-11 passiert und war nicht
+    # diagnostizierbar.
+    if ($Json -or $OutFile) {
+        if ($Level -in @('ERR', 'WARN')) {
+            [Console]::Error.WriteLine("[$(Get-Date -Format 'HH:mm:ss')][$Level] $Msg")
+        }
+        return
+    }
     $Farbe = switch ($Level) {
         'OK'   { 'Green'  }
         'WARN' { 'Yellow' }
@@ -72,7 +95,49 @@ function Write-Log {
     Write-Host "[$(Get-Date -Format 'HH:mm:ss')][$Level] $Msg" -ForegroundColor $Farbe
 }
 
-if (-not $Json) {
+# Einzige Stelle, die das Ergebnis rausgibt - auch im Fehlerfall (dann mit
+# leerer Liste), damit der Aufrufer nie vor einer fehlenden/halben Datei
+# steht. [System.IO.File]::WriteAllText statt Out-File: schreibt UTF-8 ohne
+# BOM, ein BOM wuerde ConvertFrom-Json beim Aufrufer stoeren.
+function Write-Result {
+    param([string[]]$Servers, [int]$ExitCode = 0)
+    $JsonText = if ($Servers -and $Servers.Count -gt 0) {
+        ConvertTo-Json -InputObject @($Servers) -Compress
+    } else {
+        '[]'
+    }
+    if ($OutFile) {
+        try {
+            [System.IO.File]::WriteAllText($OutFile, $JsonText, (New-Object System.Text.UTF8Encoding($false)))
+        }
+        catch {
+            [Console]::Error.WriteLine("[ERR] Konnte Ergebnis nicht nach '$OutFile' schreiben: $($_.Exception.Message)")
+            exit 1
+        }
+    }
+    if ($Json -and -not $OutFile) { $JsonText | Write-Output }
+    exit $ExitCode
+}
+
+# Ergebnisdatei SOFORT leer anlegen, bevor irgendetwas passieren kann:
+# Ditzler-Powershell-Lib.psm1 beendet bei einem Fehler (z.B. DPAPI-
+# Entschluesselung scheitert, weil nicht als SYSTEM gelaufen) den ganzen
+# Prozess ueber Stop-Script -> "exit 1". Das laesst sich NICHT per
+# try/catch abfangen, und ohne diese Vorab-Datei stuende der Aufrufer dann
+# vor gar keinem Ergebnis (beobachtet 27.08.2026). Die eigentliche
+# Fehlerursache schreibt die Bibliothek dabei selbst nach STDOUT - die GUI
+# zeigt diesen Kanal mit an.
+if ($OutFile) {
+    try {
+        [System.IO.File]::WriteAllText($OutFile, '[]', (New-Object System.Text.UTF8Encoding($false)))
+    }
+    catch {
+        [Console]::Error.WriteLine("[ERR] Ergebnisdatei '$OutFile' ist nicht beschreibbar: $($_.Exception.Message)")
+        exit 1
+    }
+}
+
+if (-not $Json -and -not $OutFile) {
     Write-Host "=== Server fuer Kategorie '$Category' (Live-Abfrage SuperOps) ===" -ForegroundColor Cyan
 }
 
@@ -83,12 +148,26 @@ if ($Category -notin $KnownCategories) {
 $LibPath = "C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1"
 if (-not (Test-Path -LiteralPath $LibPath)) {
     Write-Log "Bibliothek nicht gefunden: $LibPath" -Level 'ERR'
-    if ($Json) { '[]' | Write-Output }
-    exit 1
+    Write-Result -ExitCode 1
 }
-Import-Module $LibPath -Force
-$AllCreds = Get-Credentials "credentials.xml"
-Initialize-SuperOpsCreds -AllCreds $AllCreds
+$CredFile = "C:\ProgramData\Superops\Scripts\credentials.xml"
+if (-not (Test-Path -LiteralPath $CredFile)) {
+    Write-Log "credentials.xml nicht gefunden: $CredFile - laeuft auf diesem Rechner ueberhaupt ein SuperOps-Agent?" -Level 'ERR'
+    Write-Result -ExitCode 1
+}
+try {
+    Import-Module $LibPath -Force
+    $AllCreds = Get-Credentials "credentials.xml"
+    Initialize-SuperOpsCreds -AllCreds $AllCreds
+}
+catch {
+    # Haeufigste Ursachen: DPAPI-Entschluesselung scheitert (Skript laeuft
+    # nicht als SYSTEM - siehe Kommentarkopf), oder die Bibliothek versucht
+    # credentials.xml >24h automatisch per Devolutions Hub zu erneuern und
+    # kommt nicht raus (kein Internet/Proxy).
+    Write-Log "Zugangsdaten konnten nicht geladen werden: $($_.Exception.Message)" -Level 'ERR'
+    Write-Result -ExitCode 1
+}
 
 $Query = @'
 query getAssetList($input: ListInfoInput!) {
@@ -115,13 +194,21 @@ $ProSeite = 100
 
 do {
     $Vars = @{ input = @{ page = $Seite; pageSize = $ProSeite } }
-    $Antwort = Invoke-SuperOpsGraphQL -Query $Query -Variables $Vars
+    try {
+        $Antwort = Invoke-SuperOpsGraphQL -Query $Query -Variables $Vars
+    }
+    catch {
+        # Typisch, wenn der Rechner die SuperOps-API nicht erreicht (kein
+        # Internet/Proxy/Firewall) - dieses Skript braucht KEINEN Zugriff
+        # auf das Produktions-AD, nur HTTPS zu euapi.superops.ai.
+        Write-Log "SuperOps-API nicht erreichbar: $($_.Exception.Message)" -Level 'ERR'
+        Write-Result -ExitCode 1
+    }
 
     if ($Antwort.PSObject.Properties['errors'] -and $Antwort.errors) {
         $Fehler = ($Antwort.errors | ForEach-Object { $_.message }) -join '; '
         Write-Log "GraphQL-Fehler: $Fehler" -Level 'ERR'
-        if ($Json) { '[]' | Write-Output }
-        exit 1
+        Write-Result -ExitCode 1
     }
 
     $Assets = @($Antwort.data.getAssetList.assets)
@@ -142,9 +229,8 @@ do {
 
 $Treffer = @($Treffer | Sort-Object -Unique)
 
-if ($Json) {
-    ConvertTo-Json -InputObject $Treffer -Compress | Write-Output
-    exit 0
+if ($Json -or $OutFile) {
+    Write-Result -Servers $Treffer -ExitCode 0
 }
 
 Write-Host ''
