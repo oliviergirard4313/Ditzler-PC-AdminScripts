@@ -382,13 +382,17 @@ $BtnRefresh.Add_Click({
         # sonst schlaegt der Button auf so einem Rechner fehl. Dasselbe
         # Problem war schon bei Invoke-ManualPatchRun.ps1 aufgetreten
         # (siehe dessen -Interpreter-Parameter).
-        $Interpreter = if (Get-Command pwsh.exe -ErrorAction SilentlyContinue) { 'pwsh.exe' } else { 'powershell.exe' }
+        $InterpreterPath = if (Get-Command pwsh.exe -ErrorAction SilentlyContinue) {
+            (Get-Command pwsh.exe).Source
+        } else {
+            (Get-Command powershell.exe).Source
+        }
         # Ergebnis ueber eine Datei holen (-OutFile), nicht ueber STDOUT:
         # Ditzler-Powershell-Lib.psm1 schreibt eigene Log- und Fehlerzeilen
         # nach STDOUT, die sich nicht abschalten lassen und die JSON-Ausgabe
         # zerstoeren wuerden (beobachtet 27.08.2026). STDOUT/STDERR werden
         # weiterhin geloggt, aber nur noch zur Diagnose.
-        $ArgList = @('-accepteula', '-nobanner', '-s', $Interpreter, '-NoProfile', '-File', "`"$HelperScript`"", '-Category', "`"$Category`"", '-OutFile', "`"$ResultFile`"")
+        $ArgList = @('-accepteula', '-nobanner', '-s', $InterpreterPath, '-NoProfile', '-File', "`"$HelperScript`"", '-Category', "`"$Category`"", '-OutFile', "`"$ResultFile`"")
         $Proc = Start-Process -FilePath $PsExecPath -ArgumentList $ArgList -RedirectStandardOutput $StdOutFile -RedirectStandardError $StdErrFile -NoNewWindow -Wait -PassThru
         $StdOut = @(Get-Content -LiteralPath $StdOutFile -ErrorAction SilentlyContinue)
         $StdErr = @(Get-Content -LiteralPath $StdErrFile -ErrorAction SilentlyContinue)
@@ -550,7 +554,7 @@ $Timer.Add_Tick({
         Add-Log (($Neu | Out-String).TrimEnd())
 
         if (-not $script:RunId) {
-            $Fund = $Neu | Where-Object { $_ -match 'RunId fuer diesen Lauf:\s*(\S+)' } | Select-Object -First 1
+            $Fund = $Neu | Where-Object { $_ -replace '^\[.*\]\s*', '' -match 'RunId fuer diesen Lauf:\s*(\S+)' } | Select-Object -First 1
             if ($Fund -and $Matches[1]) {
                 $script:RunId = $Matches[1]
                 $script:StatusJob = Start-StatusPollingJob -Servers $script:CurrentTargets -RunId $script:RunId

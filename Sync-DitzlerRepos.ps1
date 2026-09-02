@@ -215,7 +215,9 @@ function Invoke-DitzlerRepoSync {
             }
         }
     } finally {
-        $Mutex.ReleaseMutex()
+        if ($Acquired) {
+            try { $Mutex.ReleaseMutex() } catch {}
+        }
         $Mutex.Dispose()
     }
 }
