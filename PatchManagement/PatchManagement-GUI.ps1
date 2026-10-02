@@ -490,7 +490,7 @@ function Start-StatusPollingJob {
                 try {
                     $Data = Invoke-Command -ComputerName $Srv -ErrorAction Stop -ScriptBlock {
                         param($RunId)
-                        $Dir = "C:\ProgramData\Superops\Scripts\_ManualPatchRun\$RunId"
+                        $Dir = "C:\Service\SuperOps-Scripts\_ManualPatchRun\$RunId"
                         $State = $null
                         $Step = ''
                         $StateFile = Join-Path $Dir 'state.json'

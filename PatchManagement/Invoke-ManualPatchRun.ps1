@@ -184,7 +184,7 @@ if ($WhatIfPreference) {
 # echten Lauf mit Reboot-Bedarf auf Produktivservern: erst an einem
 # Testserver mit echtem Reboot verifizieren.
 
-$RemoteScriptPath = "C:\ProgramData\Superops\Scripts\_ManualPatchRun\$RunId\install.ps1"
+$RemoteScriptPath = "C:\Service\SuperOps-Scripts\_ManualPatchRun\$RunId\install.ps1"
 $LaunchFailures   = [System.Collections.Generic.List[object]]::new()
 $PendingServers   = [System.Collections.Generic.List[string]]::new()
 $Sessions         = @{}
@@ -254,7 +254,7 @@ while ($PendingServers.Count -gt 0 -and ((Get-Date) - $PollStart) -lt (New-TimeS
             $StateJson = Invoke-Command -ComputerName $server @CredSplat -ErrorAction Stop -ScriptBlock {
                 param($Path)
                 if (Test-Path -LiteralPath $Path) { Get-Content -LiteralPath $Path -Raw }
-            } -ArgumentList "C:\ProgramData\Superops\Scripts\_ManualPatchRun\$RunId\state.json"
+            } -ArgumentList "C:\Service\SuperOps-Scripts\_ManualPatchRun\$RunId\state.json"
             if ($StateJson) { $State = $StateJson | ConvertFrom-Json }
         }
         catch {

@@ -109,7 +109,14 @@ if (-not $WhatIfPreference) {
 $ErrorActionPreference = 'Stop'
 $ServerName = $env:COMPUTERNAME
 
-$StateRoot = "C:\ProgramData\Superops\Scripts\_ManualPatchRun"
+# Seit 02.10.2026 unter C:\Service\SuperOps-Scripts statt
+# C:\ProgramData\Superops\Scripts: den Ordner leert der SuperOps-Agent
+# periodisch komplett (siehe WorkDir-Migration der Ditzler-Powershell-Lib
+# v0.9.13, 04.09.2026) - ein Leeren mitten im Lauf haette state.json und
+# resume.ps1 geloescht und die Fortsetzung nach dem Reboot abgebrochen.
+# Der Ordner wird bei Bedarf samt Elternordnern angelegt (Invoke-
+# ManualPatchRun.ps1 bzw. Initialize-StateDir), ACL siehe Initialize-StateDir.
+$StateRoot = "C:\Service\SuperOps-Scripts\_ManualPatchRun"
 $StateDir  = Join-Path $StateRoot $StateId
 $StateFile = Join-Path $StateDir "state.json"
 $SelfCopy  = Join-Path $StateDir "resume.ps1"

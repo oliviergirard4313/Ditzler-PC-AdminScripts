@@ -292,7 +292,7 @@ dossier `PatchManagement\`) est :
    `-EncodedCommand` — ça a planté au premier vrai test (`TEST-Update-1`, `-WhatIf`) avec
    *"The filename or extension is too long"* (~38 000 caractères encodés, au-dessus de la limite
    pratique de `CreateProcess`/PsExec, ~32 700). Corrigé : le script est maintenant copié par SMB
-   (`C$`) vers `C:\ProgramData\Superops\Scripts\_ManualPatchRun\<RunId>\install.ps1` sur chaque
+   (`C$`) vers `C:\Service\SuperOps-Scripts\_ManualPatchRun\<RunId>\install.ps1` sur chaque
    serveur cible puis lancé via `-File` ; il se supprime lui-même en fin d'exécution (même
    principe que la copie `resume.ps1` déjà utilisée pour la reprise post-reboot).
 3. `Install-ManualPatches-Local.ps1` tourne localement sur le serveur : installe les updates déjà
