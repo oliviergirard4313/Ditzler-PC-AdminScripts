@@ -705,8 +705,10 @@ oblige à passer `-LocalScriptPath`/`-OutputCsv` à la main ou à éditer `$Repo
 - **Pour le bouton "Server aktualisieren" du GUI** (liste live depuis SuperOps) :
   `Get-AssetsByPatchCategory.ps1` en plus, et sur la machine il faut alors **PsExec** (cherché dans
   `C:\ProgramData\chocolatey\bin\`, `C:\Tools\`, puis le PATH) ainsi que
-  `C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1` + `credentials.xml` (déposés par
-  l'agent SuperOps — présents si la machine est bien un asset SuperOps managé). Sans ça, le bouton
+  `C:\Service\SuperOps-Scripts\Ditzler-Powershell-Lib.psm1` + `credentials.xml` (déposés par
+  "Sync SuperOps Files from Git" via l'agent SuperOps — présents si la machine est bien un asset
+  SuperOps managé ; avant le 04.09.2026 ils étaient sous `C:\ProgramData\Superops\Scripts`, que
+  l'agent SuperOps vide périodiquement, d'où le déménagement). Sans ça, le bouton
   ne marche pas mais **le reste du GUI reste utilisable** : coller la liste des 3 serveurs dans le
   champ "Manuell".
 - Pas nécessaires : `Set-AssetPatchCategory.ps1`, `Build-ServerPatchCategoryPlan.ps1`,

@@ -5,8 +5,8 @@
 # Zweck    : Vergleicht aktive AD Server mit dem SuperOps Asset-Export
 #            und optional mit Nutanix VM-Inventar.
 # Autor    : Claude / GitHub Copilot
-# Version  : 1.0
-# Datum    : 2026-08-06
+# Version  : 1.1
+# Datum    : 2026-10-02
 # ==========================================================
 
 param(
@@ -104,7 +104,7 @@ function Get-NutanixVMList {
     # Zugangsdaten aus der bestehenden Ditzler-Powershell-Lib, gleiches
     # Muster wie "Monitoring Nutanix Snapshots.ps1" - keine Klartext-
     # Credentials als Skriptparameter.
-    $LibPath = "C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1"
+    $LibPath = "C:\Service\SuperOps-Scripts\Ditzler-Powershell-Lib.psm1"
     if (-not (Test-Path -LiteralPath $LibPath)) {
         Write-ErrorAndExit "Ditzler-Powershell-Lib nicht gefunden: $LibPath"
     }

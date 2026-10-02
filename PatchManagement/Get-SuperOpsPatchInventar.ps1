@@ -34,7 +34,7 @@ try { Clear-Host } catch { }
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$LibPath = "C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1"
+$LibPath = "C:\Service\SuperOps-Scripts\Ditzler-Powershell-Lib.psm1"
 
 function Write-Log {
     param([string]$Msg, [string]$Level = 'INFO')

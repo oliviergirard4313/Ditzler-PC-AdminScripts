@@ -20,7 +20,7 @@
 try { Clear-Host } catch { }
 $ErrorActionPreference = 'Stop'
 
-$LibPath = "C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1"
+$LibPath = "C:\Service\SuperOps-Scripts\Ditzler-Powershell-Lib.psm1"
 Import-Module $LibPath -Force
 Initialize-WorkDir
 

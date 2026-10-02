@@ -91,7 +91,7 @@ if ($PSCmdlet.ParameterSetName -eq 'Single' -and -not $AssetId -and -not $Server
     exit 1
 }
 
-$LibPath = "C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1"
+$LibPath = "C:\Service\SuperOps-Scripts\Ditzler-Powershell-Lib.psm1"
 if (-not (Test-Path -LiteralPath $LibPath)) {
     Write-Log "Bibliothek nicht gefunden: $LibPath" -Level 'ERR'
     exit 1

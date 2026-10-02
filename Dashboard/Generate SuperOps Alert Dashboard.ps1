@@ -3,8 +3,8 @@
 # ==========================================================
 # Skript: Generate SuperOps Alert Dashboard
 # Autor: GIO / Claude
-# Version: 6.4
-# Datum: 2026-08-31
+# Version: 6.5
+# Datum: 2026-10-02
 #
 # Zweck:
 #   Erzeugt eine HTML-Seite mit dem VOLLTEXT aktiver SuperOps-Alerts, fuer
@@ -181,6 +181,19 @@
 #                      offen ist - vorher wurde jede jemals verletzte
 #                      SLA-Aufloesungszeit weitergezaehlt. "Resolved" bleibt
 #                      absichtlich enthalten (nur "Closed" ausgeschlossen).
+#   6.5 (2026-10-02): Skript lief seit dem 01.10.2026 nicht mehr (Aufgabe
+#                      endete mit Ergebnis 1, Seite seit 01.10. 00:02 nicht
+#                      mehr aktualisiert), nachdem der SuperOps-Agent den
+#                      alten Ordner geleert hatte. Seit der WorkDir-Migration
+#                      vom 04.09.2026 liegen Ditzler-Powershell-Lib.psm1 und
+#                      credentials.xml nicht mehr unter
+#                      C:\ProgramData\Superops\Scripts (wird vom SuperOps-
+#                      Agent periodisch geleert), sondern unter
+#                      C:\Service\SuperOps-Scripts. $SuperOpsScriptDir
+#                      entsprechend angepasst - dieses Skript war bei der
+#                      Migration (Ditzler-Scripts-Superops, Commit ff36b69)
+#                      nicht mit umgestellt worden, da es in einem anderen
+#                      Repo liegt.
 # ==========================================================
 
 param(
@@ -198,9 +211,10 @@ param(
 
 # ------------------ PFADE ----------------------
 # Bibliothek/Zugangsdaten gehoeren SuperOps (nur lesend genutzt) - liegen
-# und bleiben deshalb im SuperOps-Verzeichnis, unabhaengig davon, wo dieses
-# Skript selbst liegt.
-$SuperOpsScriptDir = "C:\ProgramData\Superops\Scripts"
+# seit der WorkDir-Migration vom 04.09.2026 (Lib v0.9.13) unter
+# C:\Service\SuperOps-Scripts, unabhaengig davon, wo dieses Skript selbst
+# liegt (siehe Aenderungsverlauf 6.5).
+$SuperOpsScriptDir = "C:\Service\SuperOps-Scripts"
 $LibPath           = Join-Path $SuperOpsScriptDir "Ditzler-Powershell-Lib.psm1"
 $CredFile          = Join-Path $SuperOpsScriptDir "credentials.xml"
 

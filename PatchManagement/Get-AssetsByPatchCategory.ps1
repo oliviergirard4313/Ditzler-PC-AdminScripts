@@ -145,12 +145,12 @@ if ($Category -notin $KnownCategories) {
     Write-Log "Ungewoehnlicher Wert fuer eine manuelle Gruppe (erwartet: $($KnownCategories -join ', ')) - fahre trotzdem fort, bei 0 Treffern Schreibweise pruefen." -Level 'WARN'
 }
 
-$LibPath = "C:\ProgramData\Superops\Scripts\Ditzler-Powershell-Lib.psm1"
+$LibPath = "C:\Service\SuperOps-Scripts\Ditzler-Powershell-Lib.psm1"
 if (-not (Test-Path -LiteralPath $LibPath)) {
     Write-Log "Bibliothek nicht gefunden: $LibPath" -Level 'ERR'
     Write-Result -ExitCode 1
 }
-$CredFile = "C:\ProgramData\Superops\Scripts\credentials.xml"
+$CredFile = "C:\Service\SuperOps-Scripts\credentials.xml"
 if (-not (Test-Path -LiteralPath $CredFile)) {
     Write-Log "credentials.xml nicht gefunden: $CredFile - laeuft auf diesem Rechner ueberhaupt ein SuperOps-Agent?" -Level 'ERR'
     Write-Result -ExitCode 1

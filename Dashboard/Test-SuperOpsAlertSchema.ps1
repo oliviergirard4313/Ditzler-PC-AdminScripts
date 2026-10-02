@@ -13,11 +13,11 @@
 # Einmalig-Werkzeug, das man von irgendwo aus (z.B. C:\Service\Scripts,
 # oder direkt von einer Kopie auf dem Desktop) manuell ausfuehrt und danach
 # wieder loeschen kann. Braucht nur lesenden Zugriff auf
-# Ditzler-Powershell-Lib.psm1/credentials.xml in C:\ProgramData\Superops\Scripts.
+# Ditzler-Powershell-Lib.psm1/credentials.xml in C:\Service\SuperOps-Scripts.
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 1.0
-# Datum    : 2026-08-12
+# Version  : 1.1
+# Datum    : 2026-10-02
 #
 # Zweck:
 #   Fuer das TV-Dashboard (Raspberry Pi + grosser Bildschirm im Buero,
@@ -46,7 +46,7 @@
 
 try { Clear-Host } catch { }
 
-$SuperOpsScriptDir = "C:\ProgramData\Superops\Scripts"
+$SuperOpsScriptDir = "C:\Service\SuperOps-Scripts"
 $LibPath           = Join-Path $SuperOpsScriptDir "Ditzler-Powershell-Lib.psm1"
 $CredFile          = Join-Path $SuperOpsScriptDir "credentials.xml"
 
