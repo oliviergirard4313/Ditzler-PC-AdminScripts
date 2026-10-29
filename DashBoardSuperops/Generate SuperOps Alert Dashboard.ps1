@@ -209,6 +209,9 @@
 #                      (kein erzwungener Devolutions-Refresh pro Minute) und
 #                      30 Minuten Pause nach HTTP 401/403/429 (sonst sperrt
 #                      der FortiGate die IP von SV-OS-PRB-01 dauerhaft).
+#                      IPsec nur Dial-up-Instanzen (Site-to-Site wie Polynorm
+#                      ausgeschlossen), Schrift der VPN-Zeile wie die
+#                      Techniker-Tabelle.
 # ==========================================================
 
 param(
@@ -591,9 +594,13 @@ function Get-FortiGateVpnUsers {
             $Namen += @($Results | ForEach-Object { $_.user_name })
         }
         else {
-            # Nur Dial-up-Tunnel tragen einen Benutzer (Site-to-Site nicht).
-            # Feldname je nach Authentisierung (XAuth bzw. IKEv2/EAP).
-            $Namen += @($Results | ForEach-Object { if ($_.xauth_user) { $_.xauth_user } else { $_.username } })
+            # Nur Dial-up-Instanzen (Feld "parent" = Phase-1-Vorlage, z.B.
+            # Remote-Pilot) - Site-to-Site-Tunnel (type "automatic", z.B.
+            # Polynorm) liefern in "username" die IP des Peers und werden
+            # nicht ueberwacht (Wunsch GIO, 29.10.2026). Feldname des
+            # Benutzers je nach Authentisierung (XAuth bzw. IKEv2/EAP).
+            $Namen += @($Results | Where-Object { $_.parent } |
+                ForEach-Object { if ($_.xauth_user) { $_.xauth_user } else { $_.username } })
         }
     }
 
@@ -754,10 +761,11 @@ function New-DashboardHtml {
   .empty { padding: 3vh 0; font-size: 2.8vh; color: #777; }
   .footer { flex: 0 0 auto; text-align: right; padding: 0.4vh 1vw; font-size: 1.6vh; color: #555; }
   /* Seit v6.6: eine Zeile mit den VPN-Benutzern zwischen SuperOps und PRTG */
-  .vpn-bar { flex: 0 0 auto; padding: 0.8vh 2vw; background: #181818; border-top: 2px solid #333; font-size: 2.3vh; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .vpn-title { color: #999; font-size: 1.7vh; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-right: 1vw; }
+  /* Schriftgroessen wie die Techniker-Tabelle (.stats-bar) */
+  .vpn-bar { flex: 0 0 auto; padding: 0.4vh 2vw; background: #181818; border-top: 2px solid #333; font-size: 1.8vh; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vpn-title { color: #999; font-size: 1.3vh; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-right: 1vw; }
   .vpn-none { color: #777; }
-  .vpn-error { color: #fb8c00; font-size: 1.8vh; }
+  .vpn-error { color: #fb8c00; font-size: 1.5vh; }
 </style>
 </head>
 <body>
