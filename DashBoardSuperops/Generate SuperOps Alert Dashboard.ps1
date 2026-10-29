@@ -205,6 +205,10 @@
 #                      v0.9.17 aus Devolutions Hub). Ist der FortiGate nicht
 #                      erreichbar, zeigt die Zeile einen Hinweis - bewusst
 #                      kein SuperOps-Alert (Skript laeuft jede Minute).
+#                      Token aus $AllCreds statt Get-ServiceAccountPassword
+#                      (kein erzwungener Devolutions-Refresh pro Minute) und
+#                      30 Minuten Pause nach HTTP 401/403/429 (sonst sperrt
+#                      der FortiGate die IP von SV-OS-PRB-01 dauerhaft).
 # ==========================================================
 
 param(
@@ -526,27 +530,57 @@ function Get-FortiGateVpnUsers {
 
     $Ergebnis = @{ Users = @(); Fehler = $null }
 
-    try {
-        $Token   = Get-ServiceAccountPassword -CredentialsFile $CredFile -ServiceName "FortiGate" -PropertyName "ApiKey"
-        $BaseUrl = Get-ServiceAccountPassword -CredentialsFile $CredFile -ServiceName "FortiGate" -PropertyName "Url"
-    }
-    catch {
+    # Bewusst aus den beim Start geladenen $AllCreds statt ueber
+    # Get-ServiceAccountPassword: dieses erzwingt bei fehlendem Eintrag einen
+    # Devolutions-Refresh - bei einem Lauf pro Minute waere das eine Hub-
+    # Verbindung und ein Neuschreiben von credentials.xml pro Minute (live
+    # beobachtet 29.10.2026). Fehlt der Eintrag, holt ihn der normale
+    # 24h-Refresh der Lib nach.
+    $Fg = $AllCreds['ServiceAccounts']['FortiGate']
+    if (-not $Fg -or -not $Fg.ApiKey -or -not $Fg.Url) {
         $Ergebnis.Fehler = "FortiGate-Zugangsdaten fehlen"
         return $Ergebnis
+    }
+    $Token   = Get-PlainPassword $Fg.ApiKey
+    $BaseUrl = $Fg.Url
+
+    # Nach einem Authentisierungsfehler 30 Minuten Pause: der FortiGate sperrt
+    # die Quell-IP nach 3 Fehlversuchen fuer 60 s (admin-lockout-threshold/
+    # -duration) - bei 2 Aufrufen pro Minute waere SV-OS-PRB-01 sonst dauerhaft
+    # gesperrt, inkl. PRTG und anderer API-Zugriffe von diesem Server.
+    $PauseDatei = Join-Path $Global:WorkDir "DashboardFortiGate.pause"
+    if (Test-Path -LiteralPath $PauseDatei) {
+        $PauseBis = (Get-Item -LiteralPath $PauseDatei).LastWriteTime.AddMinutes(30)
+        if ((Get-Date) -lt $PauseBis) {
+            $Ergebnis.Fehler = "FortiGate-Abfrage pausiert bis $($PauseBis.ToString('HH:mm')) (Token abgelehnt)"
+            return $Ergebnis
+        }
+        Remove-Item -LiteralPath $PauseDatei -Force -ErrorAction SilentlyContinue
     }
 
     $Namen  = @()
     $Fehler = @()
     foreach ($Typ in "ssl", "ipsec") {
-        $Raw = "Authorization: Bearer $Token" | & curl.exe -s -S -f --max-time $TimeoutSeconds `
-            -H '@-' -H "Accept: application/json" "$BaseUrl/api/v2/monitor/vpn/$Typ" 2>&1
+        # Letzte Zeile = HTTP-Status (-w), davor der Antwortkoerper
+        $Raw = @("Authorization: Bearer $Token" | & curl.exe -s -S --max-time $TimeoutSeconds -w "`n%{http_code}" `
+            -H '@-' -H "Accept: application/json" "$BaseUrl/api/v2/monitor/vpn/$Typ" 2>&1)
         if ($LASTEXITCODE -ne 0) {
-            # curl -S liefert die Ursache (z.B. Zertifikat, Timeout, HTTP 401)
-            $Fehler += "$Typ ($((@($Raw) | Select-Object -Last 1) -replace '^curl: \(\d+\)\s*', ''))"
+            # curl -S liefert die Ursache (z.B. Zertifikat, Timeout)
+            $Fehler += "$Typ ($((@($Raw | Where-Object { "$_" -like 'curl:*' }) | Select-Object -Last 1) -replace '^curl: \(\d+\)\s*', ''))"
+            continue
+        }
+        $Status = "$($Raw[-1])".Trim()
+        if ($Status -in '401', '403', '429') {
+            $Fehler += "$Typ (HTTP $Status)"
+            [System.IO.File]::WriteAllText($PauseDatei, "HTTP $Status $(Get-Date -Format s)")
+            break
+        }
+        if ($Status -ne '200') {
+            $Fehler += "$Typ (HTTP $Status)"
             continue
         }
         try {
-            $Results = @((($Raw -join "`n") | ConvertFrom-Json).results)
+            $Results = @((($Raw[0..($Raw.Count - 2)] -join "`n") | ConvertFrom-Json).results)
         }
         catch {
             $Fehler += "$Typ (Antwort kein JSON)"
