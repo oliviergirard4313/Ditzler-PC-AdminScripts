@@ -2,12 +2,12 @@
 # AUTOPILOT-VORBEREITUNG
 # Bringt einen neuen PC waehrend der OOBE auf den aktuellen Patchstand
 # und registriert ihn anschliessend in Windows Autopilot (Intune).
-# Start: Shift+F10 in der OOBE -> _launch_.cmd (vom USB-Stick)
+# Start: Shift+F10 in der OOBE -> __launch_.cmd (vom USB-Stick)
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 1.1
+# Version  : 1.2
 # Datum    : unbekannt (vor 16.10.2026)
-# Geaendert: 16.10.2026
+# Geaendert: 30.10.2026
 #
 # Zweck:
 #   Vorbereitung eines fabrikneuen bzw. frisch installierten PCs fuer das
@@ -25,6 +25,9 @@
 #     1. Skript lokal kopieren (falls vom USB-Stick gestartet)
 #     2. Netzwerkverbindung pruefen
 #     3. PSWindowsUpdate installieren
+#     3b. Nur HP: HP Image Assistant (Treiber, BIOS, Firmware) online -
+#        im ersten Zyklus, ein zweites Mal nur nach einem BIOS-Update
+#        (Ordner "HPIA" neben dem Skript auf dem USB-Stick, sonst Download von HP)
 #     4. Windows Updates suchen/installieren, mehrere Durchgaenge ohne
 #        Neustart, solange neue Updates gefunden werden
 #     5. Neustart-Entscheidung
@@ -62,6 +65,27 @@
 #                     _launch_.cmd; Kopie wird bei der Bereinigung entfernt.
 #                     Set-WinUserLanguageList entfernt (wirkte nur auf das
 #                     temporaere OOBE-Konto). Get-WmiObject -> Get-CimInstance.
+#   1.2 (30.10.2026): Neuer Schritt 3b: HP Image Assistant vor Windows
+#                     Update (nur HP-Geraete). Windows Update liefert BIOS/
+#                     Firmware praktisch nie und HP-Treiber oft veraltet.
+#                     Im OOBE ist BitLocker noch nicht aktiv und kein
+#                     Benutzer angemeldet - ideal fuer den BIOS-Flash.
+#                     Online-Modus (Download direkt von HP): als SYSTEM
+#                     ohne Domaene ist das Repository auf sv-sto-syno-01
+#                     nicht erreichbar. HPIA-Binaries kommen aus dem Ordner
+#                     "HPIA" neben dem Skript (USB-Stick) und werden in
+#                     Schritt 1 lokal kopiert. Lauf im ersten Zyklus; ein
+#                     zweiter Lauf nur, wenn sich die BIOS-Version danach
+#                     geaendert hat (Status in hpia-status.json). Exit 3010
+#                     -> Neustart ueber die bestehende Zyklus-Logik. Fehler
+#                     sind nur Warnungen, das Onboarding wird nicht
+#                     blockiert. Windows-Update-Treiber bleiben vorerst
+#                     aktiv (Auswertung nach dem ersten Geraet).
+#                     Fehlt der Ordner "HPIA" auf dem USB-Stick, wird die
+#                     aktuelle Version von HP geladen (Link von der HP-Seite
+#                     HPIA.html, sonst Ersatzversion), die HP-Signatur
+#                     geprueft und still entpackt.
+#                     Starter umbenannt: _launch_.cmd -> __launch_.cmd.
 # ==========================================================
 
 #Requires -RunAsAdministrator
@@ -75,7 +99,7 @@ param(
 #region Konfiguration
 $LocalBase      = 'C:\Service\AutopilotSetup'
 $LocalScript    = "$LocalBase\Autopilot-Vorbereitung.ps1"
-$LocalLauncher  = "$LocalBase\_launch_.cmd"
+$LocalLauncher  = "$LocalBase\__launch_.cmd"
 $WorkDir        = "$LocalBase\Work"
 $LogFile        = "$WorkDir\Autopilot-Vorbereitung.log"
 
@@ -90,6 +114,42 @@ $MaxZyklen      = 5
 
 # Maximale Anzahl Such-/Installationsdurchgaenge innerhalb eines Zyklus (ohne Neustart)
 $MaxDurchgaenge = 3
+
+# HP Image Assistant: Binaries im Unterordner "HPIA" neben dem Skript (USB-Stick)
+$HpiaOrdnerName  = 'HPIA'
+$HpiaLokal       = "$LocalBase\HPIA"
+$HpiaDownloads   = "$WorkDir\HPIA-Downloads"
+$HpiaReports     = "$WorkDir\HPIA-Reports"
+# Merkt sich Anzahl Laeufe und BIOS-Version vor dem letzten Lauf
+$HpiaStatusDatei = "$WorkDir\hpia-status.json"
+# Zweiter Lauf nur nach einem BIOS-Update (neue Treiber/Firmware fuer das neue BIOS)
+$HpiaMaxLaeufe   = 2
+$HpiaEndpunkte   = @('hpia.hpcloud.hp.com', 'ftp.hp.com')
+# Download, falls kein HPIA auf dem USB-Stick: offizielle HP-Seite mit dem Link zur
+# aktuellen Version; ist sie nicht lesbar, wird die Ersatzversion geladen
+$HpiaInfoSeite      = 'https://ftp.ext.hp.com/pub/caps-softpaq/cmit/HPIA.html'
+$HpiaErsatzVersion  = '5.3.7'
+$HpiaDownloadMuster = 'https://hpia\.hpcloud\.hp\.com/downloads/hpia/hp-hpia-[\d\.]+\.exe'
+
+# HPIA Exit Codes - Quelle: "HP Image Assistant User Guide" (April 2026), Tabelle 7-1
+# (identisch zu "HP Client Treiber und Firmware updaten.ps1")
+$HpiaExitCodeMap = @{
+    0    = "Erfolg, keine Aktion noetig"
+    256  = "Erfolg, die Analyse hat keine Empfehlungen ergeben"
+    257  = "Erfolg, es wurden keine Empfehlungen fuer die Analyse ausgewaehlt"
+    3010 = "Erfolg, Neustart erforderlich (HPIA startet NICHT selbst neu)"
+    3011 = "Ein SoftPaq war nicht automatisch installierbar und wurde uebersprungen"
+    3020 = "Installation fehlgeschlagen - mindestens eine SoftPaq-Installation ist gescheitert"
+    4096 = "Plattform wird nicht unterstuetzt"
+    4097 = "Ungueltige Parameter"
+    4098 = "Keine Internetverbindung"
+    4102 = "TLS 1.2 oder hoeher erforderlich"
+    4103 = "Anfrage konnte nicht vollstaendig an den Server gesendet werden"
+    8192 = "Vorgang fehlgeschlagen"
+    8196 = "Download der Liste unterstuetzter Plattformen fehlgeschlagen"
+    8199 = "SoftPaq-Download fehlgeschlagen"
+    8200 = "SoftPaq-Extraktion fehlgeschlagen"
+}
 
 # Update-Filter: keine Feature-Upgrades, keine Vorschau-Updates (Titel DE/EN)
 $WuFilter = @{
@@ -214,6 +274,46 @@ function Get-VerfuegbareUpdates {
     }
 }
 
+# Laedt HPIA von HP herunter, prueft die HP-Signatur und entpackt nach $HpiaLokal (wirft bei Fehler)
+function Install-HpiaVonHp {
+    # Fortschrittsanzeige von Invoke-WebRequest bremst den Download in PS 5.1 stark
+    $ProgressPreference = 'SilentlyContinue'
+
+    $Url = $null
+    try {
+        $Seite = Invoke-WebRequest -Uri $HpiaInfoSeite -UseBasicParsing -TimeoutSec 30 -ErrorAction Stop
+        $Treffer = [regex]::Match($Seite.Content, $HpiaDownloadMuster)
+        if ($Treffer.Success) { $Url = $Treffer.Value }
+    } catch {
+        Write-Log "  HP-Infoseite nicht lesbar: $($_.Exception.Message)" "WARNUNG"
+    }
+    if (-not $Url) {
+        $Url = "https://hpia.hpcloud.hp.com/downloads/hpia/hp-hpia-$HpiaErsatzVersion.exe"
+        Write-Log "  Kein Link gefunden - Ersatzversion $HpiaErsatzVersion" "WARNUNG"
+    }
+
+    $Installer = Join-Path $WorkDir (Split-Path $Url -Leaf)
+    Write-Log "  Download: $Url"
+    Invoke-WebRequest -Uri $Url -OutFile $Installer -UseBasicParsing -TimeoutSec 300 -ErrorAction Stop
+
+    # Nur von HP signierte Dateien ausfuehren
+    $Signatur = Get-AuthenticodeSignature -FilePath $Installer
+    if ($Signatur.Status -ne 'Valid' -or $Signatur.SignerCertificate.Subject -notmatch 'O=HP Inc\.') {
+        Remove-Item -Path $Installer -Force -ErrorAction SilentlyContinue
+        throw "Signatur ungueltig ($($Signatur.Status), $($Signatur.SignerCertificate.Subject))"
+    }
+    Write-Log "  Signatur OK: $($Signatur.SignerCertificate.Subject)" "ERFOLG"
+
+    # SoftPaq-Schalter: /s still, /e nur entpacken, /f Zielordner
+    $Prozess = Start-Process -FilePath $Installer -ArgumentList '/s', '/e', '/f', $HpiaLokal `
+        -Wait -PassThru -ErrorAction Stop
+    Remove-Item -Path $Installer -Force -ErrorAction SilentlyContinue
+    if (-not (Test-Path (Join-Path $HpiaLokal 'HPImageAssistant.exe'))) {
+        throw "Entpacken fehlgeschlagen (Exit $($Prozess.ExitCode)), HPImageAssistant.exe fehlt in $HpiaLokal"
+    }
+    Write-Log "  HPIA entpackt nach: $HpiaLokal" "ERFOLG"
+}
+
 # Countdown-Neustart: speichert Zykluszahl auf Disk, zeigt 30s Countdown, rebootet
 function Start-AutomatischerNeustart {
     param([int]$AktuellerZyklus)
@@ -231,7 +331,7 @@ function Start-AutomatischerNeustart {
     } elseif (Test-Path $LocalScript) {
         Write-Log "  Lokal : powershell -ExecutionPolicy Bypass -File `"$LocalScript`"" "WARNUNG"
     }
-    Write-Log "  Oder  : _launch_.cmd vom USB-Stick" "WARNUNG"
+    Write-Log "  Oder  : __launch_.cmd vom USB-Stick" "WARNUNG"
     Write-Log "================================================================" "WARNUNG"
 
     for ($i = 30; $i -gt 0; $i--) {
@@ -262,7 +362,7 @@ if (Test-Path $ZyklusDatei) {
     }
 }
 
-Write-Log "=== Start Autopilot-Vorbereitung v1.1 (Update-Zyklus: $AktuellerZyklus/$MaxZyklen) ==="
+Write-Log "=== Start Autopilot-Vorbereitung v1.2 (Update-Zyklus: $AktuellerZyklus/$MaxZyklen) ==="
 $Serial = (Get-CimInstance Win32_BIOS -ErrorAction SilentlyContinue).SerialNumber
 Write-Log "Seriennummer : $Serial"
 Write-Log "Computername : $env:COMPUTERNAME"
@@ -300,10 +400,17 @@ if (-not $UpdatePhaseAbgeschlossen) {
             Copy-Item -Path $AktuellerPfad -Destination $LocalScript -Force -ErrorAction Stop
             Write-Log "  Skript kopiert nach: $LocalScript" "ERFOLG"
 
-            $Launcher = Join-Path (Split-Path $AktuellerPfad -Parent) '_launch_.cmd'
+            $Launcher = Join-Path (Split-Path $AktuellerPfad -Parent) '__launch_.cmd'
             if (Test-Path $Launcher) {
                 Copy-Item -Path $Launcher -Destination $LocalLauncher -Force -ErrorAction Stop
                 Write-Log "  Starter kopiert nach: $LocalLauncher" "ERFOLG"
+            }
+
+            $HpiaQuelle = Join-Path (Split-Path $AktuellerPfad -Parent) $HpiaOrdnerName
+            if (Test-Path (Join-Path $HpiaQuelle 'HPImageAssistant.exe')) {
+                robocopy "$HpiaQuelle" "$HpiaLokal" /MIR /R:2 /W:2 /NFL /NDL /NP /NJH /NJS | Out-Null
+                if ($LASTEXITCODE -ge 8) { throw "Robocopy HPIA Fehler ($LASTEXITCODE)" }
+                Write-Log "  HPIA kopiert nach: $HpiaLokal" "ERFOLG"
             }
         } catch {
             $script:WarnungsListe.Add("Lokale Kopie fehlgeschlagen: $($_.Exception.Message)")
@@ -373,6 +480,109 @@ if (-not $UpdatePhaseAbgeschlossen) {
     }
     #endregion
 
+    #region Schritt 3b: HP Image Assistant (Treiber, BIOS, Firmware)
+    # Fehler hier sind nur Warnungen - Windows Update und Onboarding laufen trotzdem weiter
+    Write-Log "=== Schritt 3b: HP Image Assistant (Zyklus $AktuellerZyklus) ==="
+    $HpiaNeustart = $false
+
+    $Hersteller  = (Get-CimInstance Win32_ComputerSystem -ErrorAction SilentlyContinue).Manufacturer
+    $BiosVersion = (Get-CimInstance Win32_BIOS -ErrorAction SilentlyContinue).SMBIOSBIOSVersion
+
+    $HpiaStatus = $null
+    if (Test-Path $HpiaStatusDatei) {
+        try { $HpiaStatus = Get-Content $HpiaStatusDatei -Raw | ConvertFrom-Json } catch { $HpiaStatus = $null }
+    }
+
+    $HpiaAusfuehren = $false
+    if ($Hersteller -notmatch '^(HP|Hewlett)') {
+        Write-Log "  Hersteller '$Hersteller' - kein HP-Geraet, Schritt wird uebersprungen"
+    } elseif (-not $HpiaStatus) {
+        Write-Log "  Erster HPIA-Lauf (BIOS: $BiosVersion)"
+        $HpiaAusfuehren = $true
+    } elseif ([int]$HpiaStatus.Laeufe -ge $HpiaMaxLaeufe) {
+        Write-Log "  HPIA bereits $($HpiaStatus.Laeufe)x gelaufen - uebersprungen"
+    } elseif ($HpiaStatus.BiosVorher -ne $BiosVersion) {
+        Write-Log "  BIOS aktualisiert ($($HpiaStatus.BiosVorher) -> $BiosVersion) - zweiter HPIA-Lauf" "ERFOLG"
+        $HpiaAusfuehren = $true
+    } else {
+        Write-Log "  BIOS unveraendert ($BiosVersion) - kein weiterer HPIA-Lauf noetig"
+    }
+
+    if ($HpiaAusfuehren) {
+        foreach ($Endpunkt in $HpiaEndpunkte) {
+            $Ergebnis = Test-NetConnection -ComputerName $Endpunkt -Port 443 `
+                -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+            if ($Ergebnis.TcpTestSucceeded) {
+                Write-Log "  $Endpunkt : erreichbar (TCP 443)" "ERFOLG"
+            } else {
+                $Meldung = "HPIA uebersprungen: $Endpunkt nicht erreichbar (TCP 443)"
+                Write-Log "  $Meldung" "WARNUNG"
+                $script:WarnungsListe.Add($Meldung)
+                $HpiaAusfuehren = $false
+                break
+            }
+        }
+    }
+
+    # Kein HPIA vom USB-Stick -> aktuelle Version direkt von HP herunterladen
+    $HpiaExe = Join-Path $HpiaLokal 'HPImageAssistant.exe'
+    if ($HpiaAusfuehren -and -not (Test-Path $HpiaExe)) {
+        Write-Log "  HPIA nicht auf dem USB-Stick ('$HpiaOrdnerName') - Download von HP"
+        try {
+            Install-HpiaVonHp
+        } catch {
+            $Meldung = "HPIA-Download fehlgeschlagen: $($_.Exception.Message) - HP-Treiber/BIOS nicht aktualisiert"
+            Write-Log "  $Meldung" "WARNUNG"
+            $script:WarnungsListe.Add($Meldung)
+            $HpiaAusfuehren = $false
+        }
+    }
+
+    if ($HpiaAusfuehren) {
+        $Laeufe = if ($HpiaStatus) { [int]$HpiaStatus.Laeufe + 1 } else { 1 }
+        # Status VOR dem Lauf speichern: bricht HPIA ab oder startet der PC neu,
+        # wird beim naechsten Zyklus nicht endlos erneut ausgefuehrt
+        [PSCustomObject]@{ Laeufe = $Laeufe; BiosVorher = $BiosVersion } |
+            ConvertTo-Json | Set-Content -Path $HpiaStatusDatei -Encoding UTF8
+
+        foreach ($d in @($HpiaDownloads, $HpiaReports)) {
+            if (-not (Test-Path $d)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
+        }
+
+        $HpiaArgs = @(
+            '/Operation:Analyze',
+            '/Action:Install',
+            '/Selection:All',
+            "/SoftpaqDownloadFolder:$HpiaDownloads",
+            "/ReportFolder:$HpiaReports",
+            '/Noninteractive'
+        )
+        Write-Log "  HPIA-Lauf $Laeufe/$HpiaMaxLaeufe gestartet (dauert oft 10-30 Minuten, Bildschirm kann flackern)..."
+        Write-Log "  Aufruf: $HpiaExe $($HpiaArgs -join ' ')"
+        try {
+            $Prozess = Start-Process -FilePath $HpiaExe -ArgumentList $HpiaArgs -WorkingDirectory $HpiaLokal `
+                -Wait -PassThru -ErrorAction Stop
+            $HpiaExit = $Prozess.ExitCode
+            $Bedeutung = if ($HpiaExitCodeMap.ContainsKey($HpiaExit)) { $HpiaExitCodeMap[$HpiaExit] } else { "Unbekannter Exit Code" }
+
+            if ($HpiaExit -in @(0, 256, 257)) {
+                Write-Log "  HPIA beendet: $HpiaExit ($Bedeutung)" "ERFOLG"
+            } elseif ($HpiaExit -eq 3010) {
+                Write-Log "  HPIA beendet: $HpiaExit ($Bedeutung)" "ERFOLG"
+                $HpiaNeustart = $true
+            } else {
+                $Meldung = "HPIA beendet mit $HpiaExit ($Bedeutung) - Report: $HpiaReports"
+                Write-Log "  $Meldung" "WARNUNG"
+                $script:WarnungsListe.Add($Meldung)
+            }
+        } catch {
+            $Meldung = "HPIA konnte nicht gestartet werden: $($_.Exception.Message)"
+            Write-Log "  $Meldung" "WARNUNG"
+            $script:WarnungsListe.Add($Meldung)
+        }
+    }
+    #endregion
+
     #region Schritt 4: Windows Updates installieren (mehrere Durchgaenge ohne Neustart)
     Write-Log "=== Schritt 4: Windows Update (Zyklus $AktuellerZyklus) ==="
     Write-Log "  Filter: keine Kategorie '$($WuFilter.NotCategory)', kein Titel '$($WuFilter.NotTitle)'"
@@ -396,7 +606,8 @@ if (-not $UpdatePhaseAbgeschlossen) {
         Write-Log "  WU-Initialisierung: $($_.Exception.Message)" "WARNUNG"
     }
 
-    $NeustartNoetig       = $false
+    # Neustart-Bedarf aus HPIA (Exit 3010) wird uebernommen
+    $NeustartNoetig       = $HpiaNeustart
     $NochUpdatesOffen     = $false
     $BereitsFehlgeschlagen = [System.Collections.Generic.HashSet[string]]::new()
 
@@ -654,7 +865,7 @@ if (-not $Gefunden) {
 # Flags und lokale Skriptkopie entfernen, das Log in $WorkDir bleibt fuer die Nachvollziehbarkeit
 Write-Log "=== Schritt 8: Bereinigung ==="
 
-foreach ($Datei in @($OnboardingFlag, $ZyklusDatei, $LocalScript, $LocalLauncher)) {
+foreach ($Datei in @($OnboardingFlag, $ZyklusDatei, $HpiaStatusDatei, $LocalScript, $LocalLauncher)) {
     if (Test-Path $Datei) {
         try {
             Remove-Item -Path $Datei -Force -ErrorAction Stop
@@ -662,6 +873,19 @@ foreach ($Datei in @($OnboardingFlag, $ZyklusDatei, $LocalScript, $LocalLauncher
         } catch {
             Write-Log "  Loeschen fehlgeschlagen: $Datei - $($_.Exception.Message)" "WARNUNG"
             $script:WarnungsListe.Add("Bereinigung fehlgeschlagen: $Datei")
+        }
+    }
+}
+
+# HPIA-Binaries und heruntergeladene SoftPaqs (mehrere GB) entfernen, Reports bleiben
+foreach ($Ordner in @($HpiaLokal, $HpiaDownloads)) {
+    if (Test-Path $Ordner) {
+        try {
+            Remove-Item -Path $Ordner -Recurse -Force -ErrorAction Stop
+            Write-Log "  Geloescht: $Ordner" "ERFOLG"
+        } catch {
+            Write-Log "  Loeschen fehlgeschlagen: $Ordner - $($_.Exception.Message)" "WARNUNG"
+            $script:WarnungsListe.Add("Bereinigung fehlgeschlagen: $Ordner")
         }
     }
 }

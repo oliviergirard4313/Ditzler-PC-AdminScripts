@@ -13,8 +13,9 @@ Scripts utilisés pour enregistrer un nouveau PC dans Windows Autopilot (Hybrid 
 | Fichier | Quand | Rôle |
 |---|---|---|
 | `__OOBESchliessen.bat` | OOBE, Shift+F10, si besoin | Passe les pages EULA et clé produit, puis relance l'interface OOBE |
-| `_launch_.cmd` | OOBE, Shift+F10 | Lance `Autopilot-Vorbereitung.ps1` |
-| `Autopilot-Vorbereitung.ps1` | via `_launch_.cmd` | Windows Update (plusieurs cycles avec redémarrages), puis upload du hash Autopilot et affectation du profil |
+| `__launch_.cmd` | OOBE, Shift+F10 | Lance `Autopilot-Vorbereitung.ps1` |
+| `Autopilot-Vorbereitung.ps1` | via `__launch_.cmd` | HP Image Assistant (PC HP), Windows Update (plusieurs cycles avec redémarrages), puis upload du hash Autopilot et affectation du profil |
+| `HPIA\` (dossier, optionnel) | copié par le script | Contenu complet de `\\sv-sto-syno-01\IT-Software\HP\HPIA\Current` (exe, DLL, config…), non versionné. Absent : le script télécharge la dernière version chez HP |
 | `_check_.cmd` | Après Autopilot, session de l'utilisateur | Lance `CheckEnrollementPC.ps1` **sans droits admin** |
 | `CheckEnrollementPC.ps1` | via `_check_.cmd` | Vérifie le Hybrid Join, le PRT, les certificats, l'enrollment Intune, les services et la synchronisation |
 
@@ -22,9 +23,9 @@ Scripts utilisés pour enregistrer un nouveau PC dans Windows Autopilot (Hybrid 
 
 1. Démarrer le PC neuf jusqu'à l'OOBE, puis **Shift+F10**.
 2. Si nécessaire : `X:\__OOBESchliessen.bat` (X = lettre de la clé USB).
-3. Lancer `X:\_launch_.cmd`.
+3. Lancer `X:\__launch_.cmd`.
    - Le script copie ses fichiers dans `C:\Service\AutopilotSetup`, vérifie le réseau, installe PSWindowsUpdate puis les mises à jour.
-   - **En cas de redémarrage automatique** : revenir à l'OOBE, **Shift+F10**, puis relancer `C:\Service\AutopilotSetup\_launch_.cmd` (ou celui de la clé USB). Le compteur de cycles est conservé sur le disque.
+   - **En cas de redémarrage automatique** : revenir à l'OOBE, **Shift+F10**, puis relancer `C:\Service\AutopilotSetup\__launch_.cmd` (ou celui de la clé USB). Le compteur de cycles est conservé sur le disque.
    - Au maximum **5 cycles** (`$MaxZyklen`). Au-delà, le script passe quand même à l'onboarding et affiche un warning.
 4. Quand le message « BEREIT FUER AUTOPILOT-ONBOARDING » s'affiche : avoir les identifiants admin M365 sous la main, appuyer sur une touche et **se connecter immédiatement** dans la fenêtre du navigateur (elle a un timeout).
 5. Le script importe le hash, affecte le profil et vérifie que l'appareil apparaît dans Intune.
@@ -36,6 +37,15 @@ Scripts utilisés pour enregistrer un nouveau PC dans Windows Autopilot (Hybrid 
 - `-GroupTag <Tag>` : Group Tag Autopilot (vide par défaut).
 - `$AusgeschlosseneKBs` (section Konfiguration) : liste de KB à ne pas installer, par exemple `@('KB5127648')`.
 - Filtre Windows Update : pas de feature upgrades (catégorie `Upgrades`) ni de previews (titre `Preview|Vorschau`). Les pilotes sont installés.
+
+## HP Image Assistant (depuis v1.2)
+
+- Uniquement sur les PC HP, **avant** Windows Update : pilotes, BIOS et firmware. Dans l'OOBE, BitLocker n'est pas encore actif et aucun utilisateur n'est connecté, ce qui en fait le bon moment pour flasher le BIOS.
+- **Mode online** (téléchargement direct chez HP, `hpia.hpcloud.hp.com` et `ftp.hp.com`) : en SYSTEM hors domaine, le dépôt du Synology n'est pas accessible.
+- Sans dossier `HPIA` sur la clé : le lien de la dernière version est lu sur `ftp.ext.hp.com/pub/caps-softpaq/cmit/HPIA.html` (sinon version de secours `$HpiaErsatzVersion`), la signature HP est vérifiée, puis le SoftPaq est extrait en silencieux.
+- Premier lancement au premier cycle, puis un second **uniquement si la version du BIOS a changé** (état dans `Work\hpia-status.json`).
+- Le code de sortie 3010 déclenche le redémarrage du cycle. Les autres erreurs ne sont que des warnings et n'empêchent pas l'onboarding.
+- Rapports HPIA : `C:\Service\AutopilotSetup\Work\HPIA-Reports` (conservés). Les binaires et les SoftPaqs téléchargés sont supprimés au nettoyage.
 
 ## Points d'attention
 
