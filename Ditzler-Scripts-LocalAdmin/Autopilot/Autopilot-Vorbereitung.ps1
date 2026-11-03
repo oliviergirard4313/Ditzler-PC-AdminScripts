@@ -71,7 +71,7 @@
 #                     Im OOBE ist BitLocker noch nicht aktiv und kein
 #                     Benutzer angemeldet - ideal fuer den BIOS-Flash.
 #                     Online-Modus (Download direkt von HP): als SYSTEM
-#                     ohne Domaene ist das Repository auf sv-sto-syno-01
+#                     ohne Domaene ist das Repository auf sv-sto-syno-15
 #                     nicht erreichbar. HPIA-Binaries kommen aus dem Ordner
 #                     "HPIA" neben dem Skript (USB-Stick) und werden in
 #                     Schritt 1 lokal kopiert. Lauf im ersten Zyklus; ein

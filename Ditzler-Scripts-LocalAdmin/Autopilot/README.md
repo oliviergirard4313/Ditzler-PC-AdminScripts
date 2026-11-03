@@ -15,7 +15,7 @@ Scripts utilisés pour enregistrer un nouveau PC dans Windows Autopilot (Hybrid 
 | `__OOBESchliessen.bat` | OOBE, Shift+F10, si besoin | Passe les pages EULA et clé produit, puis relance l'interface OOBE |
 | `__launch_.cmd` | OOBE, Shift+F10 | Lance `Autopilot-Vorbereitung.ps1` |
 | `Autopilot-Vorbereitung.ps1` | via `__launch_.cmd` | HP Image Assistant (PC HP), Windows Update (plusieurs cycles avec redémarrages), puis upload du hash Autopilot et affectation du profil |
-| `HPIA\` (dossier, optionnel) | copié par le script | Contenu complet de `\\sv-sto-syno-01\IT-Software\HP\HPIA\Current` (exe, DLL, config…), non versionné. Absent : le script télécharge la dernière version chez HP |
+| `HPIA\` (dossier, optionnel) | copié par le script | Contenu complet de `\\sv-sto-syno-15\IT-Software\HP\HPIA\Current` (exe, DLL, config…), non versionné. Absent : le script télécharge la dernière version chez HP |
 | `_check_.cmd` | Après Autopilot, session de l'utilisateur | Lance `CheckEnrollementPC.ps1` **sans droits admin** |
 | `CheckEnrollementPC.ps1` | via `_check_.cmd` | Vérifie le Hybrid Join, le PRT, les certificats, l'enrollment Intune, les services et la synchronisation |
 

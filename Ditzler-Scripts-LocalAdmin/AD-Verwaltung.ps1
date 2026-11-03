@@ -83,7 +83,7 @@ $Config = [ordered]@{
     SamErsetzenIn        = @('scriptPath', 'profilePath', 'homeDirectory')
     # Comarch-Kürzel = aktiver Comarch-Benutzer; PFX-Ablage und _Deploy (Prepare-ComarchUserCerts.ps1)
     ComarchAttribut      = 'extensionAttribute2'
-    ComarchZertifikate   = '\\sv-sto-syno-01.ditzlernet.local\IT-Software\ComarchERP\UserCertificates'
+    ComarchZertifikate   = '\\sv-sto-syno-15.ditzlernet.local\IT-Software\ComarchERP\UserCertificates'
 }
 
 # Gratis-/Viral-SKUs, die nicht zur Auswahl stehen sollen
