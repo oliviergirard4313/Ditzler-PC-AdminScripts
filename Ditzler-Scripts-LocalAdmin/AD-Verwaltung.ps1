@@ -13,6 +13,9 @@
       - Danach: AD-Replikation des Objekts, Delta-Sync auf dem Entra-Connect-Server,
         Warten auf das Entra-Objekt, UsageLocation setzen, Lizenz zuweisen
       - Zugangsblatt drucken (Benutzer, Mail, Initialpasswort, Regeln der effektiven FGPP)
+      - Comarch-Kürzel (extensionAttribute2): Knopf "Kürzel vorschlagen" = 2 Buchstaben Vorname
+        + 1 Nachname (+1..9 falls in AD oder als PFX belegt), editierbar, leer = kein Comarch-Benutzer.
+        Daraus verteilt Prepare-ComarchUserCerts.ps1 (SV-OS-MGT-11) das Benutzerzertifikat.
 
     Registerkarte "Diagnose":
       - Prüft einen einzelnen Benutzer in AD und Entra ID; jede behebbare Abweichung hat
@@ -66,6 +69,9 @@ $Config = [ordered]@{
     EntraWarteMinuten    = 5
     InitialPasswortTage  = 7
     GraphScopes          = @('User.ReadWrite.All', 'Organization.Read.All')
+    # Anmeldung per Gerätecode mit der App "Microsoft Graph Command Line Tools" (wie Connect-MgGraph)
+    GraphClientId        = '14d82eec-204b-4c2f-b7e8-296a70dab67e'
+    GraphAuthority       = 'https://login.microsoftonline.com/organizations/oauth2/v2.0'
     # Wie "Kopieren" in ADUC, ohne title, extensionAttribute*, msExch*, RADIUS/NPS, BitLocker/TPM
     KopierAttribute      = @(
         'company', 'department', 'division', 'manager',
@@ -75,6 +81,9 @@ $Config = [ordered]@{
     )
     # In diesen Attributen wird der SAM der Vorlage durch den neuen SAM ersetzt (%username%)
     SamErsetzenIn        = @('scriptPath', 'profilePath', 'homeDirectory')
+    # Comarch-Kürzel = aktiver Comarch-Benutzer; PFX-Ablage und _Deploy (Prepare-ComarchUserCerts.ps1)
+    ComarchAttribut      = 'extensionAttribute2'
+    ComarchZertifikate   = '\\sv-sto-syno-01.ditzlernet.local\IT-Software\ComarchERP\UserCertificates'
 }
 
 # Gratis-/Viral-SKUs, die nicht zur Auswahl stehen sollen
@@ -121,6 +130,8 @@ $script:Ui                = @{}
 $script:Beschaeftigt      = $false
 $script:GraphVerbunden    = $false
 $script:GraphKonto        = ''
+$script:GraphAblauf       = $null
+$script:GraphRefresh      = $null
 $script:AlleSkus          = @()
 $script:Vorlage           = $null
 $script:LetzterBenutzer   = $null
@@ -232,6 +243,46 @@ function Show-AuswahlDialog {
     return $null
 }
 
+# Nicht-modales Fenster für die Gerätecode-Anmeldung: Link anklickbar, Code markier-/kopierbar.
+# Schliessen oder "Abbrechen" setzt $script:GeraetecodeAbbruch.
+function Show-GeraetecodeFenster {
+    param([string]$Url, [string]$Code, [int]$Minuten)
+    $xaml = @'
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Anmeldung an Microsoft 365" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" FontFamily="Segoe UI" FontSize="13">
+  <StackPanel Margin="18">
+    <TextBlock Text="Auf einem beliebigen Gerät (z.B. dem eigenen PC mit FIDO2-Schlüssel) öffnen:" Margin="0,0,0,6"/>
+    <TextBlock Margin="12,0,0,14"><Hyperlink x:Name="lnkUrl"><Run x:Name="runUrl"/></Hyperlink></TextBlock>
+    <TextBlock Text="und diesen Code eingeben:" Margin="0,0,0,6"/>
+    <StackPanel Orientation="Horizontal" Margin="12,0,0,14">
+      <TextBox x:Name="txtCode" IsReadOnly="True" FontFamily="Consolas" FontSize="20" FontWeight="Bold" Padding="6,2" MinWidth="170"/>
+      <Button x:Name="btnKopieren" Content="Kopieren" Margin="8,0,0,0" Padding="12,4"/>
+    </StackPanel>
+    <TextBlock x:Name="lblWarten" Foreground="#555555"/>
+    <Button x:Name="btnAbbrechen" Content="Abbrechen" HorizontalAlignment="Right" Margin="0,14,0,0" Padding="14,4" IsCancel="True"/>
+  </StackPanel>
+</Window>
+'@
+    $dlg = [System.Windows.Markup.XamlReader]::Parse($xaml)
+    $dlg.Owner = $script:Window
+    $dlg.FindName('runUrl').Text = $Url
+    $lnk = $dlg.FindName('lnkUrl')
+    $lnk.NavigateUri = [Uri]$Url
+    $lnk.Add_Click({ Start-Process $this.NavigateUri.AbsoluteUri })
+    $dlg.FindName('txtCode').Text = $Code
+    $dlg.FindName('btnKopieren').Add_Click({
+            [System.Windows.Clipboard]::SetText([System.Windows.Window]::GetWindow($this).FindName('txtCode').Text)
+        })
+    $dlg.FindName('lblWarten').Text = "Warte auf die Anmeldung (max. $Minuten Minuten) ..."
+    $dlg.FindName('btnAbbrechen').Add_Click({ [System.Windows.Window]::GetWindow($this).Close() })
+    $dlg.Add_Closed({ $script:GeraetecodeAbbruch = $true })
+    $script:GeraetecodeAbbruch = $false
+    $dlg.Show()
+    return $dlg
+}
+
 # ---------------------------------------------------------------------------
 # AD-Hilfsfunktionen
 # ---------------------------------------------------------------------------
@@ -332,15 +383,44 @@ function Get-BenutzernamenVorschlag {
     throw "Kein freier Benutzername für $basis gefunden."
 }
 
+# Konten (auch deaktivierte), die das Comarch-Kürzel bereits tragen – Comarch vergibt ein Kürzel nie neu
+function Get-ComarchKuerzelBelegung {
+    param([string]$Kuerzel, [string]$AusserDn = '')
+    return @(Get-ADUser -LDAPFilter "($($Config.ComarchAttribut)=$(ConvertTo-LdapWert $Kuerzel))" -Server $script:DC |
+            Where-Object { $_.DistinguishedName -ne $AusserDn })
+}
+
+# Vorschlag: 2 Buchstaben Vorname + 1 Nachname, belegt (AD oder PFX-Datei) -> Ziffer 1..9.
+# Nur ein Vorschlag – massgebend ist das in Comarch vergebene Kürzel.
+function Get-ComarchKuerzelVorschlag {
+    param([string]$Vorname, [string]$Nachname)
+    $v = (ConvertTo-NamensTeil $Vorname) -replace '[^a-z]', ''
+    $n = (ConvertTo-NamensTeil $Nachname) -replace '[^a-z]', ''
+    if ($v.Length -lt 2 -or $n.Length -lt 1) { return '' }
+    $basis = ($v.Substring(0, 2) + $n.Substring(0, 1)).ToUpperInvariant()
+    $dateien = @()
+    if (Test-Path -LiteralPath $Config.ComarchZertifikate) {
+        $dateien = @(Get-ChildItem -LiteralPath $Config.ComarchZertifikate -Filter "$basis*.pfx" -File | ForEach-Object { $_.BaseName.ToUpperInvariant() })
+    }
+    for ($i = 0; $i -le 9; $i++) {
+        $k = if ($i -eq 0) { $basis } else { "$basis$i" }
+        if ($dateien -notcontains $k -and (Get-ComarchKuerzelBelegung $k).Count -eq 0) { return $k }
+    }
+    return ''
+}
+
 function Find-AdBenutzer {
     param([string]$Suchtext)
     $w = ConvertTo-LdapWert $Suchtext.Trim()
     if (-not $w) { return @() }
-    $filter = "(&(objectCategory=person)(objectClass=user)(|(sAMAccountName=*$w*)(displayName=*$w*)(userPrincipalName=*$w*)(mail=*$w*)))"
-    return @(Get-ADUser -LDAPFilter $filter -Server $script:DC -Properties DisplayName, Enabled -ResultSetSize 50 |
+    # Comarch-Kürzel nur exakt, sonst liefern kurze Suchtexte (z.B. "ma") Dutzende Treffer
+    $filter = "(&(objectCategory=person)(objectClass=user)(|(sAMAccountName=*$w*)(displayName=*$w*)(userPrincipalName=*$w*)(mail=*$w*)($($Config.ComarchAttribut)=$w)))"
+    return @(Get-ADUser -LDAPFilter $filter -Server $script:DC -Properties DisplayName, Enabled, $Config.ComarchAttribut -ResultSetSize 50 |
             Sort-Object DisplayName |
             ForEach-Object {
                 $zusatz = @()
+                $kuerzel = [string]$_.($Config.ComarchAttribut)
+                if ($kuerzel) { $zusatz += "Comarch $kuerzel" }
                 if (-not $_.Enabled) { $zusatz += 'deaktiviert' }
                 if (Test-Geschuetzt $_.SamAccountName) { $zusatz += 'geschützt' }
                 $z = if ($zusatz) { ' [' + ($zusatz -join ', ') + ']' } else { '' }
@@ -480,6 +560,7 @@ $EntraFelder = 'id,displayName,userPrincipalName,accountEnabled,usageLocation,as
 
 function Invoke-Graph {
     param([string]$Methode = 'GET', [Parameter(Mandatory)][string]$Uri, $Body)
+    if ($script:GraphAblauf -and (Get-Date) -gt $script:GraphAblauf) { Update-GraphToken }
     $p = @{ Method = $Methode; Uri = $Uri; OutputType = 'PSObject'; ErrorAction = 'Stop' }
     if ($null -ne $Body) {
         $p.Body = ConvertTo-Json -InputObject $Body -Depth 10
@@ -488,22 +569,87 @@ function Invoke-Graph {
     return (Invoke-MgGraphRequest @p)
 }
 
+# Token-Endpunkt: Fehlercodes (authorization_pending ...) stehen im JSON-Körper der Antwort
+function Invoke-TokenAnfrage {
+    param([hashtable]$Body)
+    try {
+        return @{ Token = (Invoke-RestMethod -Method Post -Uri "$($Config.GraphAuthority)/token" -Body $Body -ErrorAction Stop); Fehler = '' }
+    }
+    catch {
+        $json = $null
+        try { $json = $_.ErrorDetails.Message | ConvertFrom-Json } catch { }
+        if ($json) { return @{ Token = $null; Fehler = [string]$json.error; Text = [string]$json.error_description } }
+        throw
+    }
+}
+
+function Set-GraphToken {
+    param($Token)
+    Connect-MgGraph -AccessToken (ConvertTo-SecureString $Token.access_token -AsPlainText -Force) -NoWelcome -ErrorAction Stop
+    # 5 Minuten Reserve, danach erneuert Invoke-Graph mit dem Refresh-Token
+    $script:GraphAblauf = (Get-Date).AddSeconds([int]$Token.expires_in - 300)
+    if ($Token.refresh_token) { $script:GraphRefresh = $Token.refresh_token }
+}
+
+function Update-GraphToken {
+    $antwort = if ($script:GraphRefresh) {
+        Invoke-TokenAnfrage @{ grant_type = 'refresh_token'; client_id = $Config.GraphClientId; refresh_token = $script:GraphRefresh
+            scope = (@($Config.GraphScopes | ForEach-Object { "https://graph.microsoft.com/$_" }) + 'offline_access') -join ' ' }
+    }
+    if (-not $antwort -or -not $antwort.Token) {
+        $script:GraphVerbunden = $false
+        $script:GraphAblauf = $null
+        Update-Statuszeile
+        throw 'Microsoft-365-Anmeldung abgelaufen – bitte oben rechts neu verbinden.'
+    }
+    Set-GraphToken $antwort.Token
+    Write-Log 'Microsoft-365-Token erneuert.'
+}
+
 function Connect-M365 {
     if (-not (Get-Module -ListAvailable Microsoft.Graph.Authentication)) {
         throw "Modul Microsoft.Graph.Authentication fehlt. Installation: Install-Module Microsoft.Graph.Authentication -Scope CurrentUser"
     }
     Import-Module Microsoft.Graph.Authentication -ErrorAction Stop
-    # Anmeldung im Browser statt über WAM
-    try { Set-MgGraphOption -DisableLoginByWAM $true -ErrorAction Stop } catch { }
-    Write-Log 'Anmeldung an Microsoft 365 – bitte im Browser anmelden ...'
-    Connect-MgGraph -Scopes $Config.GraphScopes -ContextScope Process -NoWelcome -ErrorAction Stop
+    # Gerätecode statt Browser auf dem Server: Connect-MgGraph im Browser-Modus brach nach
+    # 2 Minuten ohne Anmeldung den ganzen Prozess ab (OperationCanceledException, 03.11.2026)
+    $scope = (@($Config.GraphScopes | ForEach-Object { "https://graph.microsoft.com/$_" }) + 'offline_access') -join ' '
+    $dc = Invoke-RestMethod -Method Post -Uri "$($Config.GraphAuthority)/devicecode" -Body @{ client_id = $Config.GraphClientId; scope = $scope } -ErrorAction Stop
+    try { Set-Clipboard -Value $dc.user_code } catch { }
+    Write-Log "Anmeldung an Microsoft 365: $($dc.verification_uri) öffnen, Code $($dc.user_code) eingeben ..."
+    $fenster = Show-GeraetecodeFenster -Url $dc.verification_uri -Code $dc.user_code -Minuten ([int]($dc.expires_in / 60))
+
+    $ende = (Get-Date).AddSeconds([int]$dc.expires_in)
+    $intervall = [Math]::Max(5, [int]$dc.interval)
+    $token = $null
+    try {
+        while (-not $token) {
+            if ((Get-Date) -gt $ende) { throw 'Zeitüberschreitung: Code nicht rechtzeitig eingegeben.' }
+            for ($s = 0; $s -lt $intervall -and -not $script:GeraetecodeAbbruch; $s++) { Wait-Ui 1 }
+            if ($script:GeraetecodeAbbruch) {
+                Write-Log 'Anmeldung an Microsoft 365 abgebrochen.' 'WARNUNG'
+                return
+            }
+            $antwort = Invoke-TokenAnfrage @{ grant_type = 'urn:ietf:params:oauth:grant-type:device_code'; client_id = $Config.GraphClientId; device_code = $dc.device_code }
+            if ($antwort.Token) { $token = $antwort.Token }
+            elseif ($antwort.Fehler -eq 'slow_down') { $intervall += 5 }
+            elseif ($antwort.Fehler -ne 'authorization_pending') { throw "Anmeldung an Microsoft 365 fehlgeschlagen: $($antwort.Fehler) – $($antwort.Text)" }
+        }
+    }
+    finally {
+        if ($fenster.IsVisible) { $fenster.Close() }
+    }
+    Set-GraphToken $token
+
     $ctx = Get-MgContext
     if (-not $ctx) { throw 'Anmeldung an Microsoft 365 fehlgeschlagen.' }
-    $fehlend = @($Config.GraphScopes | Where-Object { $ctx.Scopes -notcontains $_ })
+    $erhalten = @([string]$token.scope -split ' ' | ForEach-Object { $_ -replace '^https://graph\.microsoft\.com/', '' })
+    $fehlend = @($Config.GraphScopes | Where-Object { $erhalten -notcontains $_ })
     if ($fehlend) { Write-Log "Fehlende Berechtigungen: $($fehlend -join ', ')" 'WARNUNG' }
+    $konto =if ($ctx.Account) { $ctx.Account } else { (Invoke-Graph -Uri 'https://graph.microsoft.com/v1.0/me?$select=userPrincipalName').userPrincipalName }
     $script:GraphVerbunden = $true
-    $script:GraphKonto = $ctx.Account
-    Write-Log "Mit Microsoft 365 verbunden als $($ctx.Account)." 'OK'
+    $script:GraphKonto = $konto
+    Write-Log "Mit Microsoft 365 verbunden als $konto." 'OK'
     Update-Lizenzen
     Update-Statuszeile
 }
@@ -665,6 +811,25 @@ function Update-NamensVorschlag {
     }
 }
 
+# Nur auf Knopfdruck: ein automatisch gefülltes Feld würde jedem neuen Benutzer ein
+# Kürzel geben – ohne PFX folgt dann täglich ein Ticket "Comarch-Zertifikat fehlt"
+function Set-ComarchKuerzelVorschlag {
+    $ui = $script:Ui
+    $vorname = $ui.txtVorname.Text.Trim()
+    $nachname = $ui.txtNachname.Text.Trim()
+    if (-not $vorname -or -not $nachname) {
+        Show-Meldung -Text 'Zuerst Vorname und Nachname eingeben.' -Titel 'Comarch-Kürzel' -Symbol 'Information'
+        return
+    }
+    $k = Get-ComarchKuerzelVorschlag -Vorname $vorname -Nachname $nachname
+    if (-not $k) {
+        Show-Meldung -Text 'Kein freies Kürzel gefunden – bitte das in Comarch vergebene Kürzel eintragen.' -Titel 'Comarch-Kürzel' -Symbol 'Warning'
+        return
+    }
+    $ui.txtComarch.Text = $k
+    Write-Log "Comarch-Kürzel vorgeschlagen: $k ($vorname $nachname)"
+}
+
 function Set-Vorlage {
     param($Eintrag)
     $ui = $script:Ui
@@ -730,6 +895,7 @@ function Invoke-BenutzerAnlage {
     $ou = $ui.cmbOU.SelectedItem
     $passwort = $ui.txtPasswort.Text
     $sku = $ui.cmbLizenz.SelectedItem
+    $kuerzel = $ui.txtComarch.Text.Trim().ToUpperInvariant()
     $sim = Test-Simulation
 
     # --- Prüfungen
@@ -741,8 +907,13 @@ function Invoke-BenutzerAnlage {
     if (Test-Geschuetzt $sam) { $fehler += "'$sam' entspricht einem geschützten Kontomuster." }
     if (-not $ou) { $fehler += 'Keine OU gewählt.' }
     if (-not $passwort) { $fehler += 'Initialpasswort fehlt.' }
+    if ($kuerzel -and $kuerzel -notmatch '^[A-Z]{3}\d?$') { $fehler += "Comarch-Kürzel '$kuerzel' ist ungültig (3 Buchstaben, optional 1 Ziffer, z.B. OLG oder MAW1)." }
     if (-not $fehler) {
         if (-not (Test-SamFrei $sam)) { $fehler += "Benutzername '$sam' ist bereits vergeben." }
+        if ($kuerzel) {
+            $belegt = Get-ComarchKuerzelBelegung $kuerzel
+            if ($belegt) { $fehler += "Comarch-Kürzel $kuerzel ist bereits vergeben an: $($belegt.SamAccountName -join ', ')" }
+        }
         $konflikte = Get-AdressKonflikte $upn
         if ($konflikte) { $fehler += "Adresse $upn wird bereits verwendet von: $($konflikte.DistinguishedName -join '; ')" }
         if ($script:GraphVerbunden) {
@@ -769,6 +940,7 @@ function Invoke-BenutzerAnlage {
         "E-Mail/UPN  : $upn"
         "OU          : $($ou.Anzeige)"
         "Vorlage     : $(if ($vorlage) { "$($vorlage.DisplayName) ($($gruppen.Count) Gruppen, $($kopie.Count) Attribute)" } else { '(keine)' })"
+        "Comarch     : $(if ($kuerzel) { $kuerzel } else { '(kein Comarch-Benutzer)' })"
         "Entra-Sync  : $(if ($syncAktiv) { 'ja' } else { 'nein' })"
         "Lizenz      : $(if ($syncAktiv -and $sku -and $sku.SkuId) { $sku.Name } else { '(keine)' })"
     ) -join "`n"
@@ -806,6 +978,7 @@ function Invoke-BenutzerAnlage {
         if ($k -eq 'accountExpires') { $parameter.AccountExpirationDate = [DateTime]::FromFileTime([int64]$kopie[$k]) }
         else { $weitere[$k] = $kopie[$k] }
     }
+    if ($kuerzel) { $weitere[$Config.ComarchAttribut] = $kuerzel }
     $parameter.OtherAttributes = $weitere
 
     Write-Log "Lege Benutzer $sam ($anzeige) an in $($ou.DistinguishedName)$(if ($vorlage) { " – Vorlage $($vorlage.SamAccountName)" })"
@@ -846,6 +1019,10 @@ function Invoke-BenutzerAnlage {
     $meldung = "Benutzer $sam wurde $(if ($sim) { 'SIMULIERT' } else { 'angelegt' }).`n"
     if ($gruppenFehler) { $meldung += "`n$gruppenFehler Gruppe(n) konnten nicht zugewiesen werden – siehe Protokoll.`n" }
     if ($entraText) { $meldung += "`n$entraText`n" }
+    if ($kuerzel) {
+        $meldung += "`nComarch-Zertifikat: $kuerzel.pfx unter $($Config.ComarchZertifikate) ablegen und den Hub-Eintrag " +
+        "'Benutzer Zertifikat COMARCH $vorname $nachname $kuerzel' mit dem PFX-Passwort anlegen – sonst erstellt der nächste Lauf ein Ticket.`n"
+    }
     $meldung += "`nJetzt kann das Zugangsblatt gedruckt werden."
     Show-Meldung -Text $meldung -Titel 'Fertig'
 }
@@ -1035,7 +1212,7 @@ function New-Pruefung {
 function Get-DiagnoseErgebnisse {
     param([Parameter(Mandatory)][string]$Dn)
     $props = @('GivenName', 'Surname', 'DisplayName', 'UserPrincipalName', 'mail', 'mailNickname', 'proxyAddresses', 'Enabled',
-        'LockedOut', 'PasswordNeverExpires', 'PasswordExpired', 'pwdLastSet', 'whenCreated', 'mS-DS-ConsistencyGuid')
+        'LockedOut', 'PasswordNeverExpires', 'PasswordExpired', 'pwdLastSet', 'whenCreated', 'mS-DS-ConsistencyGuid', $Config.ComarchAttribut)
     $u = Get-ADUser -Identity $Dn -Properties $props -Server $script:DC
     $liste = New-Object System.Collections.Generic.List[object]
     $geschuetzt = Test-Geschuetzt $u.SamAccountName
@@ -1164,6 +1341,28 @@ function Get-DiagnoseErgebnisse {
     else {
         $liste.Add((New-Pruefung 'AD' 'Passwortrichtlinie' 'WARNUNG' "Keine FGPP – nur Default Domain Policy (min. $($richtlinie.MinLaenge) Zeichen, Komplexität: $($richtlinie.Komplex))." `
                     'Fgpp' $null "Benutzer in eine Gruppe aufnehmen, für die '$($Config.BenutzerFgpp)' gilt."))
+    }
+
+    # --- Comarch-Benutzerzertifikat (verteilt durch Prepare-ComarchUserCerts.ps1 auf SV-OS-MGT-11)
+    $kuerzel = [string]$u.($Config.ComarchAttribut)
+    if (-not $kuerzel) {
+        $liste.Add((New-Pruefung 'Comarch' 'Comarch-Kürzel' 'INFO' "$($Config.ComarchAttribut) leer – kein Comarch-Benutzer, kein Zertifikat."))
+    }
+    elseif ($kuerzel -notmatch '^[A-Za-z]{3}\d?$') {
+        $liste.Add((New-Pruefung 'Comarch' 'Comarch-Kürzel' 'FEHLER' "'$kuerzel' hat nicht das Format ABC oder ABC1 – in ADUC korrigieren ($($Config.ComarchAttribut))."))
+    }
+    else {
+        $andere = @(Get-ComarchKuerzelBelegung $kuerzel -AusserDn $u.DistinguishedName)
+        if ($andere) {
+            $liste.Add((New-Pruefung 'Comarch' 'Comarch-Kürzel' 'FEHLER' "$kuerzel ist auch bei $($andere.SamAccountName -join ', ') gesetzt – kein Zertifikat, bis das bereinigt ist."))
+        }
+        elseif (Test-Path -LiteralPath (Join-Path $Config.ComarchZertifikate "_Deploy\$($u.SID.Value).pfx")) {
+            $liste.Add((New-Pruefung 'Comarch' 'Comarch-Zertifikat' 'OK' "$kuerzel – verteilbereit"))
+        }
+        else {
+            $liste.Add((New-Pruefung 'Comarch' 'Comarch-Zertifikat' 'WARNUNG' ("$kuerzel – noch nicht verteilbereit: $kuerzel.pfx unter $($Config.ComarchZertifikate) und Hub-Eintrag " +
+                        "'Benutzer Zertifikat COMARCH $($u.GivenName) $($u.Surname) $kuerzel' prüfen (täglicher Lauf 05:45, sonst Ticket).")))
+        }
     }
 
     # --- Entra ID
@@ -1407,7 +1606,7 @@ function Update-Statuszeile {
                   <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
                   </Grid.RowDefinitions>
                   <TextBlock Grid.Row="0" Style="{StaticResource Feld}" Text="Vorname"/>
                   <TextBox x:Name="txtVorname" Grid.Row="0" Grid.Column="1"/>
@@ -1423,7 +1622,17 @@ function Update-Statuszeile {
                   <ComboBox x:Name="cmbOU" Grid.Row="5" Grid.Column="1" DisplayMemberPath="Anzeige"/>
                   <TextBlock Grid.Row="6" Style="{StaticResource Feld}" Text="Initialpasswort"/>
                   <TextBox x:Name="txtPasswort" Grid.Row="6" Grid.Column="1" FontFamily="Consolas"/>
-                  <TextBlock x:Name="lblHinweis" Grid.Row="7" Grid.Column="1" Foreground="#9A6700" TextWrapping="Wrap" Margin="4,2"/>
+                  <TextBlock Grid.Row="7" Style="{StaticResource Feld}" Text="Comarch-Kürzel"/>
+                  <Grid Grid.Row="7" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txtComarch" CharacterCasing="Upper" MaxLength="4"
+                             ToolTip="Leer = kein Comarch-Benutzer (kein Zertifikat). Vorschlag mit dem Kürzel in Comarch abgleichen."/>
+                    <Button x:Name="btnKuerzel" Grid.Column="1" Content="Kürzel vorschlagen"/>
+                  </Grid>
+                  <TextBlock x:Name="lblHinweis" Grid.Row="8" Grid.Column="1" Foreground="#9A6700" TextWrapping="Wrap" Margin="4,2"/>
                 </Grid>
               </GroupBox>
               <GroupBox Header="3. Microsoft 365">
@@ -1554,6 +1763,7 @@ $script:NamensTimer.Add_Tick({
 $namensHandler = { $script:NamensTimer.Stop(); $script:NamensTimer.Start() }
 $ui.txtVorname.Add_TextChanged($namensHandler)
 $ui.txtNachname.Add_TextChanged($namensHandler)
+$ui.btnKuerzel.Add_Click({ Invoke-UiAktion { Set-ComarchKuerzelVorschlag } })
 
 # --- Kopfzeile
 $ui.btnM365.Add_Click({
