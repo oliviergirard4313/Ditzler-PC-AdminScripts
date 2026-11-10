@@ -47,6 +47,13 @@ Scripts utilisés pour enregistrer un nouveau PC dans Windows Autopilot (Hybrid 
 - Le code de sortie 3010 déclenche le redémarrage du cycle. Les autres erreurs ne sont que des warnings et n'empêchent pas l'onboarding.
 - Rapports HPIA : `C:\Service\AutopilotSetup\Work\HPIA-Reports` (conservés). Les binaires et les SoftPaqs téléchargés sont supprimés au nettoyage.
 
+## Préparation du TPM (depuis v1.3)
+
+- Étape 5b, à la fin de la phase de mises à jour : `Initialize-Tpm` si le TPM n'est pas prêt (effacement autorisé seulement si BitLocker ne protège pas encore C:), tâche `Tpm-Maintenance` (met le certificat EK en cache), contrôle du certificat EK et de la vérification de pré-attestation au démarrage (event 1038 = OK, 1040 = KO).
+- Si le TPM n'est pas encore attestable : redémarrage via la logique de cycles. Au dernier cycle : **FEHLER** dans le log, l'onboarding continue.
+- Si le TPM doit être effacé, le BIOS HP peut demander une confirmation (F1) au redémarrage.
+- Origine : CLT-MQDVQD5FHFI (09.11.2026), TPM en état usine sans certificat EK, effacé par Windows pendant l'ESP, ce qui a provoqué l'erreur à l'étape « Sécurité ».
+
 ## Points d'attention
 
 - Les scopes Graph sont **identiques** à ceux que `Get-WindowsAutoPilotInfo` 3.9 demande lui-même. S'ils diffèrent, une deuxième connexion est demandée.

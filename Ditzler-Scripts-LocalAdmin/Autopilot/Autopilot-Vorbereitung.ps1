@@ -5,9 +5,9 @@
 # Start: Shift+F10 in der OOBE -> __launch_.cmd (vom USB-Stick)
 # ==========================================================
 # Autor    : GIO / Claude
-# Version  : 1.2
+# Version  : 1.3
 # Datum    : unbekannt (vor 16.10.2026)
-# Geaendert: 30.10.2026
+# Geaendert: 10.11.2026
 #
 # Zweck:
 #   Vorbereitung eines fabrikneuen bzw. frisch installierten PCs fuer das
@@ -34,6 +34,9 @@
 #        -> Neustart noetig: automatischer Neustart, Skript danach erneut
 #           starten (Zykluszaehler wird auf Disk gespeichert)
 #        -> Nichts mehr zu tun oder $MaxZyklen erreicht: Update-Phase fertig
+#     5b. TPM vorbereiten: Bereitstellung (Initialize-Tpm), Tpm-Maintenance
+#        (EK-Zertifikat), Vor-Nachweis-Pruefung beim Start; falls noch nicht
+#        nachweisfaehig -> Neustart ueber die Zyklus-Logik
 #
 #   Phase Onboarding (einmalig nach abgeschlossener Update-Phase):
 #     6. Get-WindowsAutoPilotInfo, Microsoft.Graph.Authentication und
@@ -86,6 +89,17 @@
 #                     HPIA.html, sonst Ersatzversion), die HP-Signatur
 #                     geprueft und still entpackt.
 #                     Starter umbenannt: _launch_.cmd -> __launch_.cmd.
+#   1.3 (10.11.2026): Neuer Schritt 5b: TPM vor dem Onboarding vorbereiten.
+#                     Fall CLT-MQDVQD5FHFI (HP ZBook X G2i, Nuvoton): TPM im
+#                     Werkszustand, EK-Zertifikat nicht verfuegbar -> Vor-
+#                     Nachweis-Pruefung "Cannot be attested", Windows loescht
+#                     das TPM erst waehrend der ESP -> Fehler im Schritt
+#                     "Sicherheit" + zusaetzliche Neustarts. Jetzt:
+#                     Initialize-Tpm (Loeschen nur ohne aktiven BitLocker-
+#                     Schutz), Tpm-Maintenance, Pruefung EK-Zertifikat und
+#                     Ereignis 1038/1040 seit dem Start; sonst Neustart ueber
+#                     die Zyklus-Logik. Bleibt das TPM bis $MaxZyklen nicht
+#                     nachweisfaehig: FEHLER im Log, Onboarding laeuft weiter.
 # ==========================================================
 
 #Requires -RunAsAdministrator
@@ -345,6 +359,94 @@ function Start-AutomatischerNeustart {
     shutdown.exe /r /t 0
     exit 0
 }
+
+# Bereitet das TPM fuer die ESP vor (Schritt "Sicherung der Hardware" / Nachweis):
+# Bereitstellung durch Windows, EK-Zertifikat im Cache, Vor-Nachweis-Pruefung beim Start bestanden.
+# Rueckgabe: 'Bereit', 'NeustartNoetig', 'NichtBereit' oder 'KeinTpm' (wirft nicht)
+function Initialize-TpmFuerAutopilot {
+    try {
+        $Tpm = Get-Tpm -ErrorAction Stop
+    } catch {
+        Write-Log "  Get-Tpm fehlgeschlagen: $($_.Exception.Message)" "WARNUNG"
+        return 'NichtBereit'
+    }
+    if (-not $Tpm.TpmPresent) {
+        Write-Log "  Kein TPM vorhanden - Schritt wird uebersprungen" "WARNUNG"
+        return 'KeinTpm'
+    }
+    Write-Log "  TPM: Ready=$($Tpm.TpmReady) Owned=$($Tpm.TpmOwned) RestartPending=$($Tpm.RestartPending)"
+
+    # 1. Bereitstellung, falls noch nicht erfolgt (Werkszustand)
+    if (-not $Tpm.TpmReady -or $Tpm.RestartPending) {
+        # Loeschen nur, wenn BitLocker auf C: noch nicht schuetzt (in der OOBE der Normalfall)
+        $LoeschenErlaubt = $true
+        try {
+            $Bl = Get-BitLockerVolume -MountPoint $env:SystemDrive -ErrorAction Stop
+            if ($Bl.ProtectionStatus -eq 'On') { $LoeschenErlaubt = $false }
+        } catch { }
+        Write-Log "  TPM nicht bereit - Initialize-Tpm (Loeschen erlaubt: $LoeschenErlaubt)..."
+        try {
+            $InitParameter = @{ AllowPhysicalPresence = $true; ErrorAction = 'Stop' }
+            if ($LoeschenErlaubt) { $InitParameter.AllowClear = $true }
+            $Init = Initialize-Tpm @InitParameter
+            Write-Log "  Initialize-Tpm: Ready=$($Init.TpmReady) RestartRequired=$($Init.RestartRequired) ShutdownRequired=$($Init.ShutdownRequired) ClearRequired=$($Init.ClearRequired) PhysicalPresenceRequired=$($Init.PhysicalPresenceRequired)"
+            if ($Init.PhysicalPresenceRequired) {
+                Write-Log "  Beim naechsten Start kann das BIOS eine Bestaetigung verlangen (z.B. F1) - am Geraet bestaetigen" "WARNUNG"
+            }
+            if ($Init.RestartRequired -or $Init.ShutdownRequired -or $Init.ClearRequired -or -not $Init.TpmReady) {
+                return 'NeustartNoetig'
+            }
+        } catch {
+            Write-Log "  Initialize-Tpm fehlgeschlagen: $($_.Exception.Message)" "WARNUNG"
+            return 'NichtBereit'
+        }
+    }
+
+    # 2. TPM-Wartungsaufgabe: legt u.a. das EK-Zertifikat im Cache ab
+    try {
+        Start-ScheduledTask -TaskPath '\Microsoft\Windows\TPM\' -TaskName 'Tpm-Maintenance' -ErrorAction Stop
+        $Gewartet = 0
+        do {
+            Start-Sleep -Seconds 5
+            $Gewartet += 5
+            $Status = (Get-ScheduledTask -TaskPath '\Microsoft\Windows\TPM\' -TaskName 'Tpm-Maintenance').State
+        } while ($Status -eq 'Running' -and $Gewartet -lt 120)
+        Write-Log "  Tpm-Maintenance ausgefuehrt (Status: $Status, ${Gewartet}s)"
+    } catch {
+        Write-Log "  Tpm-Maintenance nicht startbar: $($_.Exception.Message)" "WARNUNG"
+    }
+
+    # 3. EK-Zertifikat verfuegbar?
+    try {
+        $Ek = Get-TpmEndorsementKeyInfo -ErrorAction Stop
+        $EkAnzahl = @($Ek.ManufacturerCertificates).Count + @($Ek.AdditionalCertificates).Count
+    } catch {
+        $EkAnzahl = 0
+        Write-Log "  Get-TpmEndorsementKeyInfo fehlgeschlagen: $($_.Exception.Message)" "WARNUNG"
+    }
+    if ($EkAnzahl -eq 0) {
+        Write-Log "  Kein EK-Zertifikat verfuegbar" "WARNUNG"
+        return 'NeustartNoetig'
+    }
+    Write-Log "  EK-Zertifikat(e) verfuegbar: $EkAnzahl" "ERFOLG"
+
+    # 4. Ergebnis der Vor-Nachweis-Pruefung beim aktuellen Start
+    #    1038 = Nachweis moeglich, 1040 = nicht moeglich (wird nur beim Start neu bewertet)
+    $Start = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+    $Pruefung = Get-WinEvent -FilterHashtable @{
+        LogName = 'System'; ProviderName = 'Microsoft-Windows-TPM-WMI'; Id = 1038, 1040; StartTime = $Start
+    } -MaxEvents 1 -ErrorAction SilentlyContinue
+    if (-not $Pruefung) {
+        Write-Log "  Keine Vor-Nachweis-Pruefung seit dem Start ($Start) protokolliert - TPM und EK sind bereit"
+        return 'Bereit'
+    }
+    if ($Pruefung.Id -eq 1040) {
+        Write-Log "  Vor-Nachweis-Pruefung beim Start ($($Pruefung.TimeCreated)): nicht nachweisfaehig - Neustart fuer neue Pruefung" "WARNUNG"
+        return 'NeustartNoetig'
+    }
+    Write-Log "  Vor-Nachweis-Pruefung beim Start ($($Pruefung.TimeCreated)): nachweisfaehig" "ERFOLG"
+    return 'Bereit'
+}
 #endregion
 
 #region Initialisierung
@@ -362,7 +464,7 @@ if (Test-Path $ZyklusDatei) {
     }
 }
 
-Write-Log "=== Start Autopilot-Vorbereitung v1.2 (Update-Zyklus: $AktuellerZyklus/$MaxZyklen) ==="
+Write-Log "=== Start Autopilot-Vorbereitung v1.3 (Update-Zyklus: $AktuellerZyklus/$MaxZyklen) ==="
 $Serial = (Get-CimInstance Win32_BIOS -ErrorAction SilentlyContinue).SerialNumber
 Write-Log "Seriennummer : $Serial"
 Write-Log "Computername : $env:COMPUTERNAME"
@@ -382,6 +484,15 @@ if ($UpdatePhaseAbgeschlossen) {
     $Meldung = "Maximale Anzahl Update-Zyklen ($MaxZyklen) erreicht - Update-Phase wird beendet, Patchstand evtl. unvollstaendig"
     Write-Log $Meldung "WARNUNG"
     $script:WarnungsListe.Add($Meldung)
+
+    # TPM trotzdem pruefen (ohne weiteren Neustart)
+    Write-Log "=== Schritt 5b: TPM vorbereiten (ohne Neustart) ==="
+    if ((Initialize-TpmFuerAutopilot) -in @('NeustartNoetig', 'NichtBereit')) {
+        $Meldung = "TPM nicht nachweisfaehig - ESP kann am Schritt 'Sicherheit' scheitern"
+        Write-Log $Meldung "FEHLER"
+        $script:FehlerListe.Add($Meldung)
+    }
+
     New-Item -Path $OnboardingFlag -ItemType File -Force | Out-Null
     $UpdatePhaseAbgeschlossen = $true
 }
@@ -693,7 +804,30 @@ if (-not $UpdatePhaseAbgeschlossen) {
     }
 
     Write-Log "System aktuell nach $AktuellerZyklus Neustart(en)" "ERFOLG"
+    #endregion
 
+    #region Schritt 5b: TPM vorbereiten
+    # Ohne bereitgestelltes TPM und EK-Zertifikat scheitert die ESP am Schritt "Sicherheit"
+    # (Fall CLT-MQDVQD5FHFI, 09.11.2026: Windows loescht das TPM erst waehrend der ESP)
+    Write-Log "=== Schritt 5b: TPM vorbereiten (Zyklus $AktuellerZyklus) ==="
+    $TpmStatus = Initialize-TpmFuerAutopilot
+    if ($TpmStatus -eq 'NeustartNoetig') {
+        if ($AktuellerZyklus + 1 -lt $MaxZyklen) {
+            Write-Log "TPM noch nicht nachweisfaehig - Neustart" "WARNUNG"
+            Start-AutomatischerNeustart -AktuellerZyklus $AktuellerZyklus
+        }
+        $TpmStatus = 'NichtBereit'
+    }
+    if ($TpmStatus -eq 'NichtBereit') {
+        $Meldung = "TPM nicht nachweisfaehig - ESP kann am Schritt 'Sicherheit' scheitern"
+        Write-Log $Meldung "FEHLER"
+        $script:FehlerListe.Add($Meldung)
+    } elseif ($TpmStatus -eq 'Bereit') {
+        Write-Log "TPM bereit fuer die ESP" "ERFOLG"
+    }
+    #endregion
+
+    #region Abschluss Update-Phase
     # Onboarding-Flag setzen und Zykluszaehler bereinigen
     New-Item -Path $OnboardingFlag -ItemType File -Force | Out-Null
     Write-Log "Onboarding-Flag gesetzt: $OnboardingFlag"
