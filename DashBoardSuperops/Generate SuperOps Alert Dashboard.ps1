@@ -3,8 +3,8 @@
 # ==========================================================
 # Skript: Generate SuperOps Alert Dashboard
 # Autor: GIO / Claude
-# Version: 6.6
-# Datum: 2026-10-29
+# Version: 6.7
+# Datum: 2026-11-25
 #
 # Zweck:
 #   Erzeugt eine HTML-Seite mit dem VOLLTEXT aktiver SuperOps-Alerts, fuer
@@ -212,19 +212,16 @@
 #                      IPsec nur Dial-up-Instanzen (Site-to-Site wie Polynorm
 #                      ausgeschlossen), Schrift der VPN-Zeile wie die
 #                      Techniker-Tabelle.
+#   6.7 (2026-11-25): PRTG-Bereich entfernt (wird nicht mehr gebraucht,
+#                      Wunsch GIO). Parameter -PrtgMapUrl entfaellt, SuperOps
+#                      nutzt die ganze Bildschirmhoehe. Vorher schnitt die
+#                      Liste "Nicht zugewiesene Tickets" (14 Tickets) die
+#                      Techniker-Tabelle nach 2 Zeilen ab.
 # ==========================================================
 
 param(
     [int]$RefreshSeconds = 60,
-    [switch]$DebugMode,
-
-    # Native PRTG-Map-Ansicht (mapshow.htm), als <iframe> in dieselbe Seite
-    # eingebettet - seit v6.0 (siehe Aenderungsverlauf) statt eines zweiten
-    # Chromium-Kiosk-Fensters auf dem Pi. Map von GIO passend fuer das
-    # Split-Layout auf 960x1080 px erstellt (linke Haelfte eines
-    # 1920x1080-Bildschirms). Leer lassen zeigt einen Platzhalter-Hinweis
-    # statt eines kaputten iframes.
-    [string]$PrtgMapUrl = "https://sv-os-prtg-01.ditzlernet.local/public/mapshow.htm?id=2914&mapid=9135FB6C-9FE1-4A07-BDB3-3B575603DFF4"
+    [switch]$DebugMode
 )
 
 # ------------------ PFADE ----------------------
@@ -618,8 +615,7 @@ function New-DashboardHtml {
         [object[]]$TechnicianStats,
         [object[]]$UnassignedTickets,
         [hashtable]$VpnUsers,
-        [int]$RefreshSeconds,
-        [string]$PrtgMapUrl
+        [int]$RefreshSeconds
     )
 
     $VpnText = if ($VpnUsers.Users.Count -gt 0) { ConvertTo-SafeHtml ($VpnUsers.Users -join ", ") }
@@ -627,13 +623,6 @@ function New-DashboardHtml {
                else { "" }
     if ($VpnUsers.Fehler) { $VpnText += " <span class=`"vpn-error`">$(ConvertTo-SafeHtml $VpnUsers.Fehler)</span>" }
     $VpnBarHtml = "<div class=`"vpn-bar`"><span class=`"vpn-title`">VPN ($($VpnUsers.Users.Count))</span>$VpnText</div>"
-
-    $PrtgPaneHtml = if ([string]::IsNullOrWhiteSpace($PrtgMapUrl)) {
-        '<div class="prtg-placeholder">PRTG-Map-URL noch nicht konfiguriert<br><span>-PrtgMapUrl Parameter setzen, sobald die Map in PRTG erstellt ist</span></div>'
-    }
-    else {
-        "<iframe src=`"$(ConvertTo-SafeHtml $PrtgMapUrl)`" allowfullscreen></iframe>"
-    }
 
     $GeneratedAt = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
@@ -719,14 +708,10 @@ function New-DashboardHtml {
   /* Seit v6.0: body ist EINE Spalte statt einer separaten Zeile pro Quelle -
      beide Quellen in EINER Seite/EINEM Kiosk-Fenster statt zwei separaten
      Chromium-Fenstern auf dem Pi (spart das fehleranfaellige X11-
-     Fenstertuiling, siehe CLAUDE.md). Seit v6.2: uebereinander (SuperOps
-     oben 2/3, PRTG unten 1/3) statt nebeneinander - auf Wunsch von GIO. */
+     Fenstertuiling, siehe CLAUDE.md). Seit v6.7 ohne PRTG-Bereich: SuperOps
+     nutzt die ganze Hoehe, darunter nur noch die VPN-Zeile. */
   body { display: flex; flex-direction: column; }
-  .superops-pane { flex: 2; width: 100%; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-  .prtg-pane { flex: 1; width: 100%; min-height: 0; background: #0a0a0a; border-top: 2px solid #333; }
-  .prtg-pane iframe { width: 100%; height: 100%; border: none; display: block; }
-  .prtg-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #666; font-size: 2.2vh; padding: 2vw; }
-  .prtg-placeholder span { font-size: 1.6vh; color: #555; margin-top: 1vh; }
+  .superops-pane { flex: 1; width: 100%; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
   /* Farbige Punkte + Verlaufslinie unter dem Header, angelehnt an das
      DITZLER-Logo (bunte Punkte ueber den Buchstaben) - der Rest bleibt
      bewusst dunkel/funktional fuer Lesbarkeit aus Bueroentfernung. */
@@ -760,7 +745,7 @@ function New-DashboardHtml {
   .badge { display: inline-block; padding: 0.5vh 1.2vw; border-radius: 999px; font-size: 2.2vh; font-weight: 700; color: #111; white-space: nowrap; }
   .empty { padding: 3vh 0; font-size: 2.8vh; color: #777; }
   .footer { flex: 0 0 auto; text-align: right; padding: 0.4vh 1vw; font-size: 1.6vh; color: #555; }
-  /* Seit v6.6: eine Zeile mit den VPN-Benutzern zwischen SuperOps und PRTG */
+  /* Seit v6.6: eine Zeile mit den VPN-Benutzern (seit v6.7 am unteren Rand) */
   /* Schriftgroessen wie die Techniker-Tabelle (.stats-bar) */
   .vpn-bar { flex: 0 0 auto; padding: 0.4vh 2vw; background: #181818; border-top: 2px solid #333; font-size: 1.8vh; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .vpn-title { color: #999; font-size: 1.3vh; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-right: 1vw; }
@@ -780,7 +765,6 @@ $StatsBarHtml
 <div class="footer">Aktualisiert: $GeneratedAt</div>
 </div>
 $VpnBarHtml
-<div class="prtg-pane">$PrtgPaneHtml</div>
 </body>
 </html>
 "@
@@ -829,8 +813,7 @@ try {
 
     $Html = New-DashboardHtml -SuperOpsAlerts $SuperOpsAlerts `
         -TechnicianStats $TechnicianStats `
-        -UnassignedTickets $UnassignedTickets -VpnUsers $VpnUsers -RefreshSeconds $RefreshSeconds `
-        -PrtgMapUrl $PrtgMapUrl
+        -UnassignedTickets $UnassignedTickets -VpnUsers $VpnUsers -RefreshSeconds $RefreshSeconds
 
     if (-not (Test-Path -LiteralPath $OutputDir)) {
         New-Item -Path $OutputDir -ItemType Directory -Force | Out-Null
