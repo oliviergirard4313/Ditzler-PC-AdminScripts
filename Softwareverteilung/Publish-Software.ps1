@@ -13,7 +13,8 @@
     - Anmeldung mit dem eigenen Entra-Konto (Rolle "Storage Blob Data
       Contributor" auf ditzlersoftware), kein Kontoschluessel, kein SAS.
     - Berechnet den SHA256-Hash. Dieser Hash ist die Referenz fuer
-      Get-DitzlerSoftware und muss im SuperOps-Skript hinterlegt werden.
+      Get-DitzlerSoftware (Ditzler-Powershell-Lib ab 0.9.23) und muss im
+      SuperOps-Skript hinterlegt werden.
       Der Hash wird zusaetzlich als Blob-Metadatum "sha256" gespeichert
       (nur zur Information, NICHT als Vertrauensquelle verwenden).
     - Ergebnis (Pfad, URL, Hash, Groesse) in der Konsole und in
@@ -42,7 +43,7 @@
 
 .NOTES
     Autor   : GIO / Claude
-    Version : 1.1
+    Version : 1.2
     Datum   : 26.11.2026
     Laeuft auf SV-OS-DEV-01 (Az-Module installiert), PowerShell 7.
 
@@ -52,6 +53,10 @@
                        Stored Access Policy erzeugt, braucht Leserecht auf
                        die Kontoschluessel, z.B. Owner); Anzeige-Bug
                        "$basisUrl?" behoben
+      1.2  26.11.2026  Ausgabe passt zu Get-DitzlerSoftware aus der Lib
+                       (Ditzler-Powershell-Lib ab 0.9.23, holt den SAS
+                       selbst): kein -Sas mehr; eigenstaendige Kopie
+                       Get-DitzlerSoftware.ps1 entfernt
 #>
 [CmdletBinding()]
 param(
@@ -141,7 +146,7 @@ $zeilen = @(
     "SHA256       : $sha256"
     ''
     'Get-DitzlerSoftware (SuperOps-Skript):'
-    "  Get-DitzlerSoftware -Pfad '$blobName' -Sha256 '$sha256' -Sas `$Sas"
+    "  Get-DitzlerSoftware -Pfad '$blobName' -Sha256 '$sha256'"
     ''
     'SuperOps Custom Software (Methode URL) - URL ohne SAS:'
     "  $basisUrl"
