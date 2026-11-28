@@ -32,7 +32,7 @@
 
 .NOTES
     Autor   : Olivier
-    Version : 1.2 (Ablaufdatum 6 Tage, Name nach KB, -DryRun)
+    Version : 1.3 (Fehlerkorrektur: fehlgeschlagener Recovery Point wurde als Erfolg gewertet)
     Datum   : 23.11.2026
 
     Exitcodes:
@@ -70,7 +70,10 @@ $LogFile = Join-Path $LogDir ("NutanixSnapshot_{0}_{1:yyyyMMdd}.log" -f $VmName,
 function Write-Log {
     param([string]$Msg, [string]$Level = 'INFO')
     $line = "[{0:yyyy-MM-dd HH:mm:ss}] [{1}] [{2}] {3}" -f (Get-Date), $Level, $VmName, $Msg
-    Write-Output $line
+    # Direkt auf die Konsole, NICHT in die Pipeline: sonst wird die Logzeile Teil
+    # des Rueckgabewerts von Funktionen (Fehler 28.11.2026: Wait-PrismTask gab
+    # bei FAILED @(Logzeile, $false) zurueck -> als Erfolg gewertet)
+    [Console]::Out.WriteLine($line)
     Add-Content -Path $LogFile -Value $line -Encoding UTF8
 }
 function Stop-WithCode { param([int]$Code, [string]$Msg) Write-Log $Msg 'ERROR'; exit $Code }
@@ -168,7 +171,8 @@ try {
     Write-Log "Recovery Point $RpName, Ablauf $Expiry (UTC)"
     try { $rp = Invoke-Prism POST 'vm_recovery_points' $rpBody }
     catch { Stop-WithCode 30 "Recovery Point konnte nicht angelegt werden: $($_.Exception.Message) - VM bleibt AUS." }
-    if (-not (Wait-PrismTask -TaskUuid $rp.status.execution_context.task_uuid)) {
+    $rpOk = Wait-PrismTask -TaskUuid $rp.status.execution_context.task_uuid
+    if ($rpOk -isnot [bool] -or -not $rpOk) {
         Stop-WithCode 30 "Recovery Point '$RpName' fehlgeschlagen - VM bleibt AUS."
     }
     Write-Log "Recovery Point angelegt: $RpName"
